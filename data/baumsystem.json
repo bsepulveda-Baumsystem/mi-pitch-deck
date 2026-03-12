@@ -1,0 +1,173 @@
+{
+  "brand": "Baumsystem",
+  "tagline": "Control Total de tu Riego",
+  "subtitle": "La plataforma de gestión de riego agrícola que transforma datos en decisiones — desde el terreno hasta la gerencia.",
+  "color_primary": "#1B4332",
+  "color_accent": "#52B788",
+
+  "kpis": [
+    { "id": "hectares",    "value": 10000, "suffix": "+",  "label": "Hectáreas bajo servicio", "icon": "map" },
+    { "id": "countries",   "value": 2,     "suffix": "",   "label": "Países (Chile y México)", "icon": "globe" },
+    { "id": "pipeline_ha", "value": 3834,  "suffix": "+",  "label": "Ha en expansión internacional", "icon": "trending-up" },
+    { "id": "satisfaction","value": 98,    "suffix": "%",  "label": "Satisfacción de clientes", "icon": "star" }
+  ],
+
+  "problems": [
+    {
+      "title": "Riego a ciegas",
+      "body": "Sin datos en tiempo real, nadie sabe si el sistema está funcionando bien. Las fallas pasan desapercibidas hasta que el daño al cultivo ya es irreversible.",
+      "icon": "eye-off"
+    },
+    {
+      "title": "Historial perdido",
+      "body": "El conocimiento vive en la cabeza del casetero o en cuadernos. Cuando se va el operador, se va el historial. Ningún activo tiene trazabilidad real.",
+      "icon": "file-x"
+    },
+    {
+      "title": "Decisiones sin datos",
+      "body": "Gerencia toma decisiones de inversión basándose en opiniones, no en métricas. No hay forma de saber si el equipo está cumpliendo el plan de mediciones.",
+      "icon": "bar-chart-2"
+    }
+  ],
+
+  "modules": [
+    {
+      "id": "levantamiento",
+      "name": "Levantamiento",
+      "tagline": "Inventario digital completo desde el día 1",
+      "description": "Registra toda la infraestructura de riego del campo: casetas, equipos, sectores, bloques y válvulas. Con georreferencia GPS, fotos y especificaciones técnicas por activo.",
+      "features": [
+        "Formulario estructurado para cada tipo de activo",
+        "Captura de coordenadas GPS directamente en terreno",
+        "QR por activo — escanea y mide al instante",
+        "Importación masiva desde planilla Excel",
+        "Generación automática del árbol de activos"
+      ]
+    },
+    {
+      "id": "mediciones",
+      "name": "Mediciones",
+      "tagline": "Trazabilidad de parámetros con semáforo de salud",
+      "description": "Registra presiones, caudales, aforos y más desde la app móvil. Cada medición se valida contra rangos óptimos y se visualiza con semáforo verde/naranja/rojo.",
+      "features": [
+        "App móvil para trabajo offline en terreno",
+        "Semáforo automático: óptimo, advertencia, crítico",
+        "Cronómetro integrado para aforos de gotero",
+        "Alertas proactivas cuando el valor está fuera de rango",
+        "Historial completo de mediciones por activo"
+      ]
+    },
+    {
+      "id": "eventos",
+      "name": "Eventos & Fallas",
+      "tagline": "Gestión de mantenciones y resolución de incidentes",
+      "description": "Registra fallas, mantenciones y observaciones directamente sobre el activo. Sigue el estado, asigna responsables y lleva el historial completo de intervenciones.",
+      "features": [
+        "Categorización por tipo: falla, mantención, otro",
+        "Prioridades: urgente (sin riego), media, baja",
+        "Asignación de responsable y fecha límite",
+        "Dashboard de eventos abiertos vs. resueltos",
+        "Tiempo promedio de resolución por prioridad"
+      ]
+    },
+    {
+      "id": "reportes",
+      "name": "Visitas & Reportes",
+      "tagline": "Informes profesionales en minutos, no en horas",
+      "description": "Los supervisores de Baumsystem documentan cada visita con observaciones, propuestas de mejora, tareas y evidencia fotográfica. El reporte en PDF llega por correo automáticamente.",
+      "features": [
+        "Módulos estructurados: observaciones, propuestas, tareas",
+        "Evidencia fotográfica con control de formato",
+        "Generación automática de PDF y envío por email",
+        "Las tareas se sincronizan con el Calendario",
+        "Reportería gerencial: Health Score, cumplimiento, backlog"
+      ]
+    }
+  ],
+
+  "process_steps": [
+    {
+      "step": 1,
+      "title": "Levantamiento Inicial",
+      "body": "Nuestro equipo visita el campo y registra toda la infraestructura en la plataforma: casetas, bombas, filtros, válvulas y bloques. En 48–72h el campo está 100% cargado.",
+      "duration": "1–3 días"
+    },
+    {
+      "step": 2,
+      "title": "Capacitación del Equipo",
+      "body": "Entrenamos a caseteros y administradores en el uso de la app. Interfaz simple y guiada — el operador hace su primera medición el mismo día de la capacitación.",
+      "duration": "1 día"
+    },
+    {
+      "step": 3,
+      "title": "Operación en Tiempo Real",
+      "body": "Desde el primer día los caseteros registran mediciones y eventos. El dashboard se actualiza en tiempo real. Supervisores Baumsystem realizan visitas periódicas de acompañamiento.",
+      "duration": "Continuo"
+    },
+    {
+      "step": 4,
+      "title": "Análisis & Decisión",
+      "body": "Gerencia accede a reportes automatizados con Health Score, ranking de activos problemáticos y proyecciones. Las decisiones de inversión se basan en datos, no en intuición.",
+      "duration": "Continuo"
+    }
+  ],
+
+  "benefits": [
+    {
+      "title": "Visibilidad 100% del riego",
+      "body": "Sabe exactamente qué está pasando en cada válvula, bomba y filtro de tu campo. En tiempo real, desde tu celular o computador.",
+      "icon": "monitor"
+    },
+    {
+      "title": "Cero fallas invisibles",
+      "body": "El sistema detecta desviaciones antes de que causen daño. Reduce el tiempo medio de respuesta ante fallas críticas de días a horas.",
+      "icon": "shield-check"
+    },
+    {
+      "title": "Historial indestructible",
+      "body": "Todo queda registrado: quién midió, cuándo, qué valor. Aunque cambie el operador, el historial del activo permanece intacto.",
+      "icon": "database"
+    },
+    {
+      "title": "Uniformidad del riego",
+      "body": "Con datos de presión y caudal por bloque, identifica sectores que riegan de más o de menos. Protege tu cultivo y ahorra agua.",
+      "icon": "droplets"
+    },
+    {
+      "title": "Reportes sin esfuerzo",
+      "body": "El gerente recibe un resumen ejecutivo automático cada semana. Sin esperar que alguien 'prepare el informe'. La plataforma lo hace sola.",
+      "icon": "file-text"
+    },
+    {
+      "title": "Equipo Baumsystem en terreno",
+      "body": "No solo vendes software — tienes un equipo de agrónomos que conoce tu campo, lo visita y te acompaña durante toda la operación.",
+      "icon": "users"
+    }
+  ],
+
+  "growth_chart": {
+    "labels": ["2021", "2022", "2023", "2024", "2025", "2026 (proy.)"],
+    "datasets": [
+      {
+        "label": "Ha bajo servicio",
+        "data": [1200, 2800, 4500, 7000, 10000, 14500]
+      }
+    ]
+  },
+
+  "international_pipeline": {
+    "total_ha": 3834,
+    "prospects": [
+      { "name": "Agroberries Perú", "ha": 800, "projected_ha": 1300, "country": "PE" },
+      { "name": "Agroblue",         "ha": 230, "country": "PE" },
+      { "name": "Agrícola Bluegold","ha": 400, "country": "PE" },
+      { "name": "Agrícola Bafar",   "ha": 1904,"country": "MX" }
+    ]
+  },
+
+  "contact": {
+    "email": "b.sepulveda@baumsystem.com",
+    "cta_title": "¿Listo para tener control total de tu riego?",
+    "cta_body": "Agenda una demo con nuestro equipo. En 30 minutos te mostramos cómo Baumsystem transforma la operación de tu campo."
+  }
+}
