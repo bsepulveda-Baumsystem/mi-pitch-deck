@@ -1,0 +1,1835 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Baumsystem — Pitch Comercial</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600;700;800&family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ============================================================
+       BRAND TOKENS
+       ============================================================ */
+    :root {
+      --c-green:        #20C73C;
+      --c-green-dark:   #1B9E30;
+      --c-green-light:  #97E112;
+      --c-green-xlight: #D8F3DC;
+      --c-bg-dark:      #1C2229;
+      --c-bg-mid:       #363F49;
+      --c-bg-slate:     #55606D;
+      --c-disabled:     #B7C3D1;
+      --c-warning:      #FFC800;
+      --c-danger:       #FF263F;
+      --c-info:         #3257FF;
+      --c-alert:        #FF8C00;
+      --c-white:        #FFFFFF;
+      --c-off-white:    #F5F8F5;
+      --c-text:         #1C2229;
+      --c-text-mid:     #4A5568;
+      --c-text-light:   #8A9BA8;
+      --c-border:       #C9DFC9;
+      --font-display:   'Space Grotesk', sans-serif;
+      --font-sans:      'Nunito', sans-serif;
+    }
+
+    /* ============================================================
+       RESET & BASE
+       ============================================================ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      width: 100%; height: 100%;
+      overflow: hidden;
+      font-family: var(--font-sans);
+      background: var(--c-bg-dark);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ============================================================
+       PRESENTATION SHELL
+       ============================================================ */
+    #presentation {
+      width: 100vw;
+      height: 100vh;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* ============================================================
+       SLIDES
+       ============================================================ */
+    .slide {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.5s ease;
+      overflow: hidden;
+    }
+    .slide.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+    .slide.slide-exit {
+      opacity: 0;
+    }
+
+    /* slide themes */
+    .slide--dark   { background: var(--c-bg-dark); color: var(--c-white); }
+    .slide--mid    { background: var(--c-bg-mid);  color: var(--c-white); }
+    .slide--light  { background: var(--c-off-white); color: var(--c-text); }
+    .slide--white  { background: var(--c-white);   color: var(--c-text); }
+    .slide--accent { background: var(--c-green-xlight); color: var(--c-text); }
+
+    /* inner centering container */
+    .slide__inner {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 56px 72px 40px;
+      max-width: 1400px;
+      margin: 0 auto;
+      width: 100%;
+      position: relative;
+      z-index: 1;
+    }
+    .slide__inner--center {
+      align-items: center;
+      text-align: center;
+    }
+
+    /* ============================================================
+       NAVIGATION
+       ============================================================ */
+    #nav {
+      position: fixed;
+      bottom: 28px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      background: rgba(28,34,41,0.85);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 999px;
+      padding: 8px 16px;
+      z-index: 1000;
+    }
+    .nav-btn {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      border: 1.5px solid rgba(255,255,255,0.2);
+      background: transparent;
+      color: var(--c-white);
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 200ms, border-color 200ms;
+    }
+    .nav-btn:hover { background: var(--c-green); border-color: var(--c-green); }
+    .nav-btn:disabled { opacity: 0.3; cursor: default; }
+    .nav-btn svg { width: 14px; height: 14px; }
+    #slideCounter {
+      font-size: 12px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.7);
+      min-width: 52px;
+      text-align: center;
+      font-family: var(--font-sans);
+    }
+
+    /* progress bar */
+    #progressBar {
+      position: fixed;
+      top: 0; left: 0;
+      height: 3px;
+      background: var(--c-green);
+      transition: width 400ms ease;
+      z-index: 999;
+    }
+
+    /* slide indicator dots */
+    #dots {
+      position: fixed;
+      right: 24px;
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      z-index: 999;
+    }
+    .dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.25);
+      cursor: pointer;
+      transition: background 250ms, transform 250ms;
+    }
+    .dot.active { background: var(--c-green); transform: scale(1.4); }
+
+    /* ============================================================
+       LOGO
+       ============================================================ */
+    .logo {
+      font-family: var(--font-display);
+      font-size: 1.1rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+    .logo--light { color: var(--c-white); }
+    .logo--light span { color: var(--c-green); }
+    .logo--dark  { color: var(--c-bg-dark); }
+    .logo--dark  span { color: var(--c-green-dark); }
+
+    /* ============================================================
+       TYPOGRAPHY UTILITIES
+       ============================================================ */
+    .label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .label--green  { color: var(--c-green); }
+    .label--greenl { color: var(--c-green-light); }
+    .label--mid    { color: rgba(255,255,255,0.5); }
+    .label--dark   { color: var(--c-bg-mid); }
+
+    .h1 {
+      font-family: var(--font-display);
+      font-size: clamp(2.8rem, 5vw, 5rem);
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      line-height: 1.0;
+      margin-bottom: 24px;
+    }
+    .h2 {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 3.5vw, 3.4rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+      margin-bottom: 16px;
+    }
+    .h3 {
+      font-family: var(--font-display);
+      font-size: clamp(1.4rem, 2.2vw, 2rem);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      margin-bottom: 12px;
+    }
+    .body-lg {
+      font-size: clamp(0.95rem, 1.4vw, 1.1rem);
+      line-height: 1.7;
+    }
+    .body {
+      font-size: clamp(0.85rem, 1.2vw, 0.95rem);
+      line-height: 1.7;
+    }
+
+    .accent { color: var(--c-green); }
+    .accent--light { color: var(--c-green-light); }
+
+    /* ============================================================
+       TAG / BADGE
+       ============================================================ */
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 14px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+    .tag--green { background: rgba(32,199,60,0.15); color: var(--c-green); border: 1px solid rgba(32,199,60,0.3); }
+    .tag--dark  { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.7); border: 1px solid rgba(255,255,255,0.12); }
+    .tag--light { background: rgba(28,34,41,0.08); color: var(--c-bg-mid); border: 1px solid rgba(28,34,41,0.15); }
+
+    /* ============================================================
+       BUTTONS
+       ============================================================ */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 28px;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: all 200ms;
+    }
+    .btn--primary {
+      background: var(--c-green);
+      color: var(--c-bg-dark);
+      border-color: var(--c-green);
+    }
+    .btn--primary:hover { background: var(--c-green-dark); border-color: var(--c-green-dark); }
+    .btn--outline {
+      background: transparent;
+      color: rgba(255,255,255,0.8);
+      border-color: rgba(255,255,255,0.25);
+    }
+    .btn--outline:hover { border-color: rgba(255,255,255,0.6); color: var(--c-white); }
+    .btn__arrow { width: 16px; height: 16px; }
+
+    /* ============================================================
+       PROOF BAR (hero stats)
+       ============================================================ */
+    .proof-bar {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      padding: 14px 24px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 14px;
+      margin-top: 28px;
+      flex-wrap: wrap;
+    }
+    .proof-item { display: flex; flex-direction: column; gap: 2px; }
+    .proof-num {
+      font-family: var(--font-display);
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: var(--c-green);
+      line-height: 1;
+    }
+    .proof-lbl { font-size: 11px; color: rgba(255,255,255,0.5); font-weight: 500; }
+    .proof-sep { width: 1px; height: 32px; background: rgba(255,255,255,0.12); }
+
+    /* ============================================================
+       SLIDE HEADER (shared top logo bar)
+       ============================================================ */
+    .slide-header {
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 72px;
+      z-index: 2;
+    }
+    .slide-header--border { border-bottom: 1px solid rgba(255,255,255,0.08); }
+    .slide-header--border-light { border-bottom: 1px solid rgba(0,0,0,0.07); }
+
+    /* ============================================================
+       SLIDE 1 — HERO
+       ============================================================ */
+    .s-hero__layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+      align-items: center;
+      width: 100%;
+    }
+    .s-hero__visual {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+    }
+    .phone-mockup {
+      width: 220px;
+      height: 420px;
+      background: var(--c-bg-mid);
+      border-radius: 36px;
+      border: 4px solid rgba(255,255,255,0.12);
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 32px 80px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1);
+      flex-shrink: 0;
+    }
+    .phone-mockup__notch {
+      position: absolute;
+      top: 12px; left: 50%; transform: translateX(-50%);
+      width: 72px; height: 8px;
+      background: rgba(0,0,0,0.5);
+      border-radius: 4px;
+      z-index: 2;
+    }
+    .phone-mockup__screen {
+      position: absolute;
+      inset: 0;
+      border-radius: 32px;
+      overflow: hidden;
+    }
+    .phone-ui {
+      padding: 36px 10px 10px;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      overflow: hidden;
+      background: #0d1a12;
+    }
+    .phone-ui__title {
+      font-size: 9px; font-weight: 800;
+      color: var(--c-green-light);
+      font-family: var(--font-sans);
+      padding: 0 2px;
+    }
+    .phone-kpi-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 4px;
+    }
+    .phone-kpi {
+      background: rgba(255,255,255,0.06);
+      border-radius: 8px;
+      padding: 6px;
+      text-align: center;
+    }
+    .phone-kpi__val {
+      font-size: 13px; font-weight: 800;
+      font-family: var(--font-sans);
+      line-height: 1;
+    }
+    .phone-kpi__lbl {
+      font-size: 6px;
+      color: rgba(255,255,255,0.5);
+      font-family: var(--font-sans);
+      margin-top: 2px;
+    }
+    .phone-chart {
+      background: rgba(255,255,255,0.04);
+      border-radius: 8px;
+      padding: 8px 6px 4px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    .phone-chart__label { font-size: 6px; color: rgba(255,255,255,0.4); font-family: var(--font-sans); margin-bottom: 6px; }
+    .phone-chart__bars { display: flex; align-items: flex-end; gap: 4px; height: 60px; }
+    .phone-bar {
+      flex: 1;
+      background: rgba(32,199,60,0.25);
+      border-radius: 3px 3px 0 0;
+      transition: height 0.3s;
+    }
+    .phone-bar--active { background: var(--c-green); }
+    .phone-bar--warn   { background: var(--c-warning); }
+    .phone-status-row { display: flex; gap: 4px; flex-wrap: wrap; }
+    .phone-pill {
+      border-radius: 999px;
+      padding: 3px 6px;
+      font-size: 6px;
+      font-weight: 600;
+      font-family: var(--font-sans);
+      display: flex; align-items: center; gap: 3px;
+    }
+    .phone-pill--green { background: rgba(32,199,60,0.15); color: var(--c-green-light); }
+    .phone-pill--red   { background: rgba(255,38,63,0.15); color: #FF7A8A; }
+    .pill-dot { width: 5px; height: 5px; border-radius: 50%; }
+    .pill-dot--green { background: var(--c-green); }
+    .pill-dot--red   { background: var(--c-danger); }
+
+    .hero-badge {
+      position: absolute;
+      background: rgba(28,34,41,0.9);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 12px;
+      padding: 8px 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      white-space: nowrap;
+    }
+    .hero-badge--1 { right: -20px; top: 60px; animation: floatA 3s ease-in-out infinite; }
+    .hero-badge--2 { left: -20px; bottom: 80px; animation: floatB 3s ease-in-out infinite; }
+    @keyframes floatA { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+    @keyframes floatB { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+    .badge-icon { font-size: 18px; }
+    .badge-text strong { display: block; font-size: 11px; font-weight: 700; color: var(--c-white); }
+    .badge-text span   { font-size: 10px; color: rgba(255,255,255,0.5); }
+
+    /* BG circles decoration */
+    .bg-decor { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+    .bg-circle {
+      position: absolute;
+      border-radius: 50%;
+    }
+    .bg-circle--1 {
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(32,199,60,0.07) 0%, transparent 70%);
+      right: -200px; top: -200px;
+    }
+    .bg-circle--2 {
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(32,199,60,0.05) 0%, transparent 70%);
+      left: -100px; bottom: -100px;
+    }
+
+    /* ============================================================
+       SLIDE 2 — PROBLEMA
+       ============================================================ */
+    .problem-grid {
+      display: grid;
+      grid-template-columns: repeat(3,1fr);
+      gap: 20px;
+      width: 100%;
+      margin-top: 24px;
+    }
+    .problem-card {
+      background: var(--c-white);
+      border: 1px solid var(--c-border);
+      border-radius: 18px;
+      padding: 28px;
+      transition: transform 300ms, box-shadow 300ms;
+    }
+    .problem-card--featured {
+      background: var(--c-bg-dark);
+      border-color: var(--c-bg-dark);
+    }
+    .problem-card:hover { transform: translateY(-4px); box-shadow: 0 16px 48px rgba(0,0,0,0.1); }
+    .problem-icon {
+      width: 48px; height: 48px;
+      border-radius: 12px;
+      background: var(--c-green-xlight);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--c-bg-dark);
+      margin-bottom: 16px;
+    }
+    .problem-card--featured .problem-icon {
+      background: rgba(255,255,255,0.1);
+      color: var(--c-green);
+    }
+    .problem-card__title {
+      font-family: var(--font-display);
+      font-size: 1.15rem;
+      font-weight: 800;
+      margin-bottom: 8px;
+      letter-spacing: -0.02em;
+    }
+    .problem-card--featured .problem-card__title { color: var(--c-green-xlight); }
+    .problem-card__body { font-size: 0.8rem; line-height: 1.7; color: var(--c-text-mid); }
+    .problem-card--featured .problem-card__body { color: rgba(216,243,220,0.75); }
+    .problem-card__stat {
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid var(--c-border);
+      display: flex; align-items: baseline; gap: 8px;
+    }
+    .problem-card--featured .problem-card__stat { border-top-color: rgba(255,255,255,0.1); }
+    .problem-stat-num {
+      font-family: var(--font-display);
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: var(--c-bg-dark);
+      letter-spacing: -0.03em;
+      line-height: 1;
+    }
+    .problem-card--featured .problem-stat-num { color: var(--c-green); }
+    .problem-stat-lbl { font-size: 0.72rem; color: var(--c-text-light); line-height: 1.4; }
+    .problem-card--featured .problem-stat-lbl { color: rgba(216,243,220,0.6); }
+
+    /* ============================================================
+       SLIDE 3 — SOLUCIÓN
+       ============================================================ */
+    .solution-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+      align-items: center;
+      width: 100%;
+    }
+    .solution-pillars { display: flex; flex-direction: column; gap: 10px; margin-top: 24px; }
+    .solution-pillar {
+      display: flex; align-items: flex-start; gap: 14px;
+      padding: 12px 16px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 10px;
+      transition: border-color 200ms, transform 200ms;
+    }
+    .solution-pillar:hover { border-color: var(--c-green); transform: translateX(4px); }
+    .pillar-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: var(--c-green);
+      flex-shrink: 0;
+      margin-top: 4px;
+      box-shadow: 0 0 8px var(--c-green);
+    }
+    .pillar-text strong { display: block; font-size: 0.85rem; font-weight: 700; color: var(--c-white); }
+    .pillar-text span   { font-size: 0.78rem; color: rgba(255,255,255,0.5); }
+
+    /* laptop mockup */
+    .laptop-mockup {
+      width: 380px;
+      flex-shrink: 0;
+    }
+    .laptop-lid {
+      background: var(--c-bg-mid);
+      border-radius: 16px 16px 4px 4px;
+      border: 3px solid rgba(255,255,255,0.1);
+      padding: 8px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    }
+    .laptop-screen {
+      background: #0d1a12;
+      border-radius: 10px;
+      overflow: hidden;
+      aspect-ratio: 16/10;
+      display: flex; flex-direction: column;
+    }
+    .laptop-topbar {
+      background: #1B4332;
+      padding: 6px 12px;
+      display: flex; align-items: center; gap: 6px;
+      flex-shrink: 0;
+    }
+    .laptop-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--c-green); }
+    .laptop-title { font-size: 8px; font-weight: 600; color: rgba(167,213,188,0.8); font-family: var(--font-sans); }
+    .laptop-body {
+      flex: 1;
+      padding: 8px;
+      display: flex; flex-direction: column; gap: 6px;
+    }
+    .laptop-kpis { display: grid; grid-template-columns: repeat(3,1fr); gap: 5px; flex-shrink: 0; }
+    .laptop-kpi {
+      background: rgba(255,255,255,0.05);
+      border-radius: 6px; padding: 6px;
+    }
+    .laptop-kpi__val { font-size: 13px; font-weight: 800; font-family: var(--font-sans); line-height: 1; }
+    .laptop-kpi__lbl { font-size: 6px; color: rgba(167,213,188,0.7); font-family: var(--font-sans); margin-top: 2px; }
+    .laptop-map {
+      flex: 1;
+      background: rgba(255,255,255,0.03);
+      border-radius: 6px;
+      border: 1px solid rgba(255,255,255,0.06);
+      position: relative; overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .laptop-map__label {
+      position: absolute; bottom: 5px; right: 6px;
+      background: rgba(27,67,50,0.9); border-radius: 3px;
+      padding: 3px 6px; font-size: 6px; color: rgba(167,213,188,0.9);
+      font-family: var(--font-sans);
+    }
+    .laptop-sectors { display: flex; gap: 4px; flex-shrink: 0; }
+    .laptop-sector {
+      flex: 1;
+      background: rgba(255,255,255,0.05);
+      border-radius: 4px; padding: 3px 5px;
+      font-size: 6.5px; font-family: var(--font-sans);
+    }
+    .laptop-base {
+      height: 10px; background: var(--c-bg-slate);
+      border-radius: 0 0 6px 6px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+      margin: 0 20px;
+    }
+
+    /* ============================================================
+       MODULE SLIDES (4-7)
+       ============================================================ */
+    .module-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 56px;
+      align-items: center;
+      width: 100%;
+    }
+    .feature-list { display: flex; flex-direction: column; gap: 10px; margin-top: 16px; }
+    .feature-item { display: flex; align-items: flex-start; gap: 10px; }
+    .feature-icon {
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      background: var(--c-green-xlight);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .slide--dark .feature-icon { background: rgba(32,199,60,0.15); }
+    .slide--dark .feature-icon svg { color: var(--c-green); }
+    .feature-icon svg { color: var(--c-bg-dark); }
+    .feature-text { font-size: 0.82rem; line-height: 1.6; }
+    .feature-text strong { font-weight: 700; }
+    .slide--dark .feature-text { color: rgba(255,255,255,0.8); }
+    .highlight-box {
+      margin-top: 20px;
+      padding: 14px 18px;
+      border-left: 3px solid var(--c-green);
+      background: var(--c-green-xlight);
+      border-radius: 0 10px 10px 0;
+      font-size: 0.82rem;
+      color: var(--c-bg-dark);
+      font-style: italic;
+      line-height: 1.6;
+    }
+    .slide--dark .highlight-box {
+      background: rgba(32,199,60,0.08);
+      border-left-color: var(--c-green);
+      color: rgba(255,255,255,0.8);
+    }
+
+    /* Semaphore */
+    .semaphore-demo {
+      background: var(--c-white);
+      border: 1px solid var(--c-border);
+      border-radius: 14px;
+      padding: 16px 20px;
+      margin-top: 20px;
+    }
+    .semaphore-title { font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--c-text-mid); margin-bottom: 10px; }
+    .semaphore-items { display: flex; flex-direction: column; gap: 8px; }
+    .semaphore-item { display: flex; align-items: center; gap: 8px; font-size: 0.8rem; color: var(--c-text-mid); }
+    .sem-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+    .sem-dot--green  { background: #22c55e; box-shadow: 0 0 6px #22c55e; }
+    .sem-dot--yellow { background: var(--c-warning); box-shadow: 0 0 6px var(--c-warning); }
+    .sem-dot--red    { background: var(--c-danger); box-shadow: 0 0 6px var(--c-danger); }
+
+    /* Phone mockup variants */
+    .phone-mockup--light .phone-ui { background: #f8faf7; }
+
+    /* ============================================================
+       SLIDE 8 — KPIs
+       ============================================================ */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(3,1fr);
+      gap: 16px;
+      width: 100%;
+      margin-top: 24px;
+    }
+    .kpi-card {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 16px;
+      padding: 24px 20px;
+      text-align: center;
+    }
+    .kpi-num {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 3vw, 3rem);
+      font-weight: 800;
+      color: var(--c-green);
+      letter-spacing: -0.03em;
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+    .kpi-lbl { font-size: 0.8rem; color: rgba(255,255,255,0.5); line-height: 1.4; }
+
+    .expansion-box {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 18px;
+      padding: 20px 28px;
+      width: 100%;
+      margin-top: 20px;
+    }
+    .expansion-title { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--c-green); margin-bottom: 14px; text-align: center; }
+    .expansion-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; }
+    .prospect {
+      display: flex; align-items: center; gap: 10px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 10px;
+      padding: 12px;
+    }
+    .prospect-flag { font-size: 20px; }
+    .prospect-info strong { display: block; font-size: 0.78rem; font-weight: 700; color: var(--c-white); }
+    .prospect-info span  { font-size: 0.7rem; color: var(--c-green); }
+
+    /* ============================================================
+       SLIDE 9 — PROCESO
+       ============================================================ */
+    .process-grid {
+      display: grid;
+      grid-template-columns: repeat(4,1fr);
+      gap: 0;
+      position: relative;
+      width: 100%;
+      margin-top: 32px;
+    }
+    .process-grid::before {
+      content: '';
+      position: absolute;
+      top: 35px;
+      left: calc(12.5% + 20px);
+      right: calc(12.5% + 20px);
+      height: 2px;
+      background: var(--c-green);
+      opacity: 0.3;
+    }
+    .process-step {
+      display: flex; flex-direction: column; align-items: center;
+      text-align: center; padding: 0 16px; position: relative; z-index: 1;
+    }
+    .step-num {
+      width: 70px; height: 70px;
+      border-radius: 50%;
+      background: var(--c-bg-dark);
+      color: var(--c-white);
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-display);
+      font-size: 1.4rem; font-weight: 800;
+      margin-bottom: 16px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+      border: 2px solid var(--c-green);
+    }
+    .step-duration {
+      font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--c-green-dark); background: white;
+      padding: 3px 10px; border-radius: 999px;
+      margin-bottom: 8px;
+      border: 1px solid var(--c-border);
+      display: inline-block;
+    }
+    .step-title {
+      font-family: var(--font-display);
+      font-size: 0.95rem; font-weight: 800;
+      color: var(--c-bg-dark); margin-bottom: 6px;
+    }
+    .step-body { font-size: 0.78rem; color: var(--c-text-mid); line-height: 1.65; }
+
+    /* ============================================================
+       SLIDE 10 — BENEFICIOS
+       ============================================================ */
+    .benefits-grid {
+      display: grid;
+      grid-template-columns: repeat(3,1fr);
+      gap: 16px;
+      width: 100%;
+      margin-top: 20px;
+    }
+    .benefit-card {
+      background: var(--c-white);
+      border: 1px solid var(--c-border);
+      border-radius: 16px;
+      padding: 22px;
+      position: relative;
+      overflow: hidden;
+      transition: transform 200ms, box-shadow 200ms;
+    }
+    .benefit-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, var(--c-green), var(--c-green-light));
+      transform: scaleX(0); transform-origin: left;
+      transition: transform 300ms;
+    }
+    .benefit-card:hover::before { transform: scaleX(1); }
+    .benefit-card:hover { transform: translateY(-3px); box-shadow: 0 12px 32px rgba(0,0,0,0.08); }
+    .benefit-icon {
+      width: 44px; height: 44px; border-radius: 10px;
+      background: var(--c-green-xlight);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--c-bg-dark);
+      margin-bottom: 12px;
+    }
+    .benefit-title {
+      font-family: var(--font-display);
+      font-size: 0.9rem; font-weight: 800;
+      color: var(--c-bg-dark); margin-bottom: 6px;
+    }
+    .benefit-body { font-size: 0.75rem; color: var(--c-text-mid); line-height: 1.65; }
+
+    /* ============================================================
+       SLIDE 11 — CRECIMIENTO
+       ============================================================ */
+    .growth-layout {
+      display: grid;
+      grid-template-columns: 1fr 1.5fr;
+      gap: 56px;
+      align-items: center;
+      width: 100%;
+    }
+    .milestones { display: flex; flex-direction: column; gap: 10px; margin-top: 16px; }
+    .milestone {
+      display: flex; align-items: flex-start; gap: 14px;
+      padding: 12px 14px;
+      background: var(--c-white);
+      border: 1px solid var(--c-border);
+      border-radius: 10px;
+      transition: border-color 200ms;
+    }
+    .milestone:hover { border-color: var(--c-green); }
+    .milestone-year {
+      font-family: var(--font-display);
+      font-size: 1rem; font-weight: 800;
+      color: var(--c-green-dark); min-width: 46px; line-height: 1.2;
+    }
+    .milestone-desc { font-size: 0.78rem; color: var(--c-text-mid); line-height: 1.5; }
+    .chart-wrap {
+      background: var(--c-white);
+      border: 1px solid var(--c-border);
+      border-radius: 20px;
+      padding: 24px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.06);
+      height: 320px;
+      display: flex; align-items: center;
+    }
+    .chart-wrap canvas { width: 100% !important; height: 100% !important; }
+
+    /* ============================================================
+       SLIDE 12 — CTA
+       ============================================================ */
+    .cta-proof {
+      display: flex; gap: 32px; align-items: center;
+      flex-wrap: wrap; justify-content: center;
+      margin-top: 28px;
+    }
+    .cta-proof-item {
+      display: flex; align-items: center; gap: 7px;
+      font-size: 0.85rem; color: rgba(255,255,255,0.5); font-weight: 500;
+    }
+    .cta-proof-item svg { color: var(--c-green); }
+
+    .cta-actions { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; margin-top: 24px; }
+
+    /* ============================================================
+       SLIDE NUMBER (top right of each slide)
+       ============================================================ */
+    .slide-num {
+      font-size: 11px;
+      font-weight: 600;
+      opacity: 0.4;
+      font-family: var(--font-sans);
+    }
+
+    /* ============================================================
+       SECTION HEADER (shared layout for most slides)
+       ============================================================ */
+    .section-header { margin-bottom: 8px; }
+    .section-header .h2 { margin-bottom: 8px; }
+    .section-header .body-lg { opacity: 0.7; max-width: 640px; }
+
+    /* ============================================================
+       MODULE NUMBER TAG
+       ============================================================ */
+    .module-tag {
+      display: inline-block;
+      font-size: 10px; font-weight: 700;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      padding: 4px 12px; border-radius: 999px;
+      margin-bottom: 10px;
+    }
+    .module-tag--dark { background: var(--c-green-xlight); color: var(--c-bg-dark); }
+    .module-tag--light { background: rgba(32,199,60,0.12); color: var(--c-green); }
+
+    /* Responsive fallback for very small screens */
+    @media (max-height: 600px) {
+      .slide__inner { padding: 48px 56px 32px; }
+      .h1 { font-size: 2.4rem; }
+      .h2 { font-size: 1.8rem; }
+    }
+
+    /* ============================================================
+       FULL-SCREEN HINT
+       ============================================================ */
+    #fullscreenBtn {
+      position: fixed; top: 14px; right: 20px;
+      width: 32px; height: 32px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      color: rgba(255,255,255,0.5);
+      cursor: pointer; z-index: 999;
+      transition: background 200ms;
+    }
+    #fullscreenBtn:hover { background: rgba(255,255,255,0.16); color: var(--c-white); }
+
+    /* Keyboard hint */
+    #keyHint {
+      position: fixed; top: 14px; left: 50%; transform: translateX(-50%);
+      font-size: 10px; color: rgba(255,255,255,0.3);
+      z-index: 999; font-family: var(--font-sans);
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="progressBar" style="width:0%"></div>
+  <div id="dots"></div>
+  <div id="keyHint">← → o flechas del teclado para navegar</div>
+
+  <button id="fullscreenBtn" title="Pantalla completa">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/>
+    </svg>
+  </button>
+
+  <div id="presentation">
+
+    <!-- ================================================================
+         SLIDE 1 — HERO
+         ================================================================ -->
+    <section class="slide slide--dark active" data-slide="0">
+      <div class="bg-decor">
+        <div class="bg-circle bg-circle--1"></div>
+        <div class="bg-circle bg-circle--2"></div>
+      </div>
+      <div class="slide-header slide-header--border">
+        <span class="logo logo--light">Baum<span>system</span></span>
+        <span class="slide-num" style="color:rgba(255,255,255,0.35)">01 / 12</span>
+      </div>
+      <div class="slide__inner">
+        <div class="s-hero__layout">
+          <div>
+            <div class="tag tag--green">
+              <svg width="8" height="8" viewBox="0 0 8 8" fill="currentColor"><circle cx="4" cy="4" r="4"/></svg>
+              Plataforma SaaS Agrícola · Chile &amp; México
+            </div>
+            <h1 class="h1">Control operacional<br/><span class="accent">de tus equipos de riego.</span></h1>
+            <p class="body-lg" style="color:rgba(255,255,255,0.65); max-width:480px;">
+              Baumsystem digitaliza la gestión de sistemas de riego agrícola: desde el levantamiento inicial hasta la reportería gerencial.
+            </p>
+            <div style="display:flex; gap:12px; margin-top:24px; flex-wrap:wrap;">
+              <a href="mailto:b.sepulveda@baumsystem.com?subject=Solicitud%20de%20Demo%20Baumsystem" class="btn btn--primary">
+                Agendar Demo
+                <svg class="btn__arrow" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+              </a>
+              <button class="btn btn--outline" onclick="goTo(3)">Ver la Plataforma</button>
+            </div>
+            <div class="proof-bar">
+              <div class="proof-item">
+                <span class="proof-num">+10.000</span>
+                <span class="proof-lbl">hectáreas gestionadas</span>
+              </div>
+              <div class="proof-sep"></div>
+              <div class="proof-item">
+                <span class="proof-num">Chile · México</span>
+                <span class="proof-lbl">presencia internacional</span>
+              </div>
+              <div class="proof-sep"></div>
+              <div class="proof-item">
+                <span class="proof-num">Web + Móvil</span>
+                <span class="proof-lbl">plataforma completa</span>
+              </div>
+            </div>
+          </div>
+          <div class="s-hero__visual">
+            <div class="phone-mockup">
+              <div class="phone-mockup__notch"></div>
+              <div class="phone-mockup__screen">
+                <div class="phone-ui">
+                  <div class="phone-ui__title">Dashboard · Campo San José</div>
+                  <div class="phone-kpi-row">
+                    <div class="phone-kpi">
+                      <div class="phone-kpi__val" style="color:#20C73C">87%</div>
+                      <div class="phone-kpi__lbl">Cumpl.</div>
+                    </div>
+                    <div class="phone-kpi">
+                      <div class="phone-kpi__val" style="color:var(--c-white)">142</div>
+                      <div class="phone-kpi__lbl">Medic.</div>
+                    </div>
+                    <div class="phone-kpi">
+                      <div class="phone-kpi__val" style="color:var(--c-danger)">3</div>
+                      <div class="phone-kpi__lbl">Fallas</div>
+                    </div>
+                  </div>
+                  <div class="phone-chart">
+                    <div class="phone-chart__label">Presiones por sector (bar)</div>
+                    <div class="phone-chart__bars">
+                      <div class="phone-bar" style="height:60%"></div>
+                      <div class="phone-bar phone-bar--active" style="height:85%"></div>
+                      <div class="phone-bar phone-bar--warn" style="height:50%"></div>
+                      <div class="phone-bar" style="height:70%"></div>
+                      <div class="phone-bar phone-bar--active" style="height:90%"></div>
+                      <div class="phone-bar" style="height:55%"></div>
+                      <div class="phone-bar phone-bar--active" style="height:75%"></div>
+                    </div>
+                  </div>
+                  <div class="phone-status-row">
+                    <div class="phone-pill phone-pill--green">
+                      <div class="pill-dot pill-dot--green"></div>Sector A — Óptimo
+                    </div>
+                    <div class="phone-pill phone-pill--red">
+                      <div class="pill-dot pill-dot--red"></div>Filtro 2 — Falla
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="hero-badge hero-badge--1">
+              <span class="badge-icon">📍</span>
+              <div class="badge-text">
+                <strong>GPS en terreno</strong>
+                <span>Georreferencia exacta</span>
+              </div>
+            </div>
+            <div class="hero-badge hero-badge--2">
+              <span class="badge-icon">🔴</span>
+              <div class="badge-text">
+                <strong>Falla detectada</strong>
+                <span>Filtro Sector B · Urgente</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================
+         SLIDE 2 — EL PROBLEMA
+         ================================================================ -->
+    <section class="slide slide--light" data-slide="1">
+      <div class="slide-header slide-header--border-light">
+        <span class="logo logo--dark">Baum<span>system</span></span>
+        <span class="slide-num" style="color:rgba(28,34,41,0.35)">02 / 12</span>
+      </div>
+      <div class="slide__inner">
+        <div class="section-header">
+          <div class="label label--dark">El Problema</div>
+          <h2 class="h2">Gestionar el riego hoy<br/>es difícil y riesgoso.</h2>
+          <p class="body-lg" style="color:var(--c-text-mid)">La agricultura de precisión requiere datos en tiempo real. Sin una plataforma digital, el campo opera a ciegas.</p>
+        </div>
+        <div class="problem-grid">
+          <!-- Card 1 -->
+          <div class="problem-card">
+            <div class="problem-icon">
+              <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+                <line x1="1" y1="1" x2="23" y2="23"/>
+              </svg>
+            </div>
+            <div class="problem-card__title">Riego a ciegas</div>
+            <p class="problem-card__body">Sin datos en tiempo real, nadie sabe si el sistema funciona correctamente. Las fallas pasan desapercibidas hasta que el daño al cultivo ya es irreversible.</p>
+            <div class="problem-card__stat">
+              <span class="problem-stat-num">-30%</span>
+              <span class="problem-stat-lbl">pérdida de rendimiento por fallas no detectadas</span>
+            </div>
+          </div>
+          <!-- Card 2 (featured) -->
+          <div class="problem-card problem-card--featured">
+            <div class="problem-icon">
+              <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>
+                <line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/><line x1="9" y1="10" x2="12" y2="10"/>
+              </svg>
+            </div>
+            <div class="problem-card__title">Historial perdido</div>
+            <p class="problem-card__body">El conocimiento vive en la cabeza del casetero o en cuadernos de papel. Cuando cambia el operador, se pierde el historial completo. Ningún activo tiene trazabilidad real.</p>
+            <div class="problem-card__stat">
+              <span class="problem-stat-num">0%</span>
+              <span class="problem-stat-lbl">de campos tienen trazabilidad digital de activos</span>
+            </div>
+          </div>
+          <!-- Card 3 -->
+          <div class="problem-card">
+            <div class="problem-icon">
+              <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>
+              </svg>
+            </div>
+            <div class="problem-card__title">Decisiones sin datos</div>
+            <p class="problem-card__body">Gerencia invierte en mantenimiento basándose en opiniones, no en métricas. No existe forma de saber si el equipo cumple el plan de mediciones ni qué activos son los más críticos.</p>
+            <div class="problem-card__stat">
+              <span class="problem-stat-num">Sin</span>
+              <span class="problem-stat-lbl">visibilidad del desempeño del equipo operacional</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================
+         SLIDE 3 — LA SOLUCIÓN
+         ================================================================ -->
+    <section class="slide slide--dark" data-slide="2">
+      <div class="bg-decor">
+        <div class="bg-circle bg-circle--1"></div>
+      </div>
+      <div class="slide-header slide-header--border">
+        <span class="logo logo--light">Baum<span>system</span></span>
+        <span class="slide-num" style="color:rgba(255,255,255,0.35)">03 / 12</span>
+      </div>
+      <div class="slide__inner">
+        <div class="solution-layout">
+          <div>
+            <div class="label label--green">La Solución</div>
+            <h2 class="h2">Una plataforma que une<br/>el terreno con<br/><span class="accent">la gerencia.</span></h2>
+            <p class="body-lg" style="color:rgba(255,255,255,0.65); max-width:440px;">
+              App móvil para el casetero, dashboard web para el gerente.
+            </p>
+            <div class="solution-pillars">
+              <div class="solution-pillar"><div class="pillar-dot"></div><div class="pillar-text"><strong>Levantamiento digital</strong><span>Inventario completo de activos con GPS y QR</span></div></div>
+              <div class="solution-pillar"><div class="pillar-dot"></div><div class="pillar-text"><strong>Mediciones con semáforo</strong><span>Presiones, caudales y aforos en tiempo real</span></div></div>
+              <div class="solution-pillar"><div class="pillar-dot"></div><div class="pillar-text"><strong>Gestión de eventos</strong><span>Fallas y mantenciones con historial completo</span></div></div>
+              <div class="solution-pillar"><div class="pillar-dot"></div><div class="pillar-text"><strong>Reportería automática</strong><span>PDF para gerencia generado en segundos</span></div></div>
+            </div>
+          </div>
+          <div style="display:flex; justify-content:center;">
+            <div>
+              <div class="laptop-lid">
+                <div class="laptop-screen">
+                  <div class="laptop-topbar">
+                    <div class="laptop-dot"></div>
+                    <span class="laptop-title">Baumsystem · Dashboard Gerencial</span>
+                  </div>
+                  <div class="laptop-body">
+                    <div class="laptop-kpis">
+                      <div class="laptop-kpi"><div class="laptop-kpi__val" style="color:#74C69D">87%</div><div class="laptop-kpi__lbl">Cumplimiento medic.</div></div>
+                      <div class="laptop-kpi"><div class="laptop-kpi__val" style="color:var(--c-warning)">3</div><div class="laptop-kpi__lbl">Eventos por resolver</div></div>
+                      <div class="laptop-kpi"><div class="laptop-kpi__val" style="color:#74C69D">94</div><div class="laptop-kpi__lbl">Health Score</div></div>
+                    </div>
+                    <div class="laptop-map">
+                      <svg width="100%" height="100%" style="position:absolute;top:0;left:0;opacity:0.2" viewBox="0 0 300 150">
+                        <defs><pattern id="grid2" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M 20 0 L 0 0 0 20" fill="none" stroke="#20C73C" stroke-width="0.5"/></pattern></defs>
+                        <rect width="100%" height="100%" fill="url(#grid2)"/>
+                      </svg>
+                      <svg width="65%" height="65%" viewBox="0 0 200 100" style="position:relative;z-index:1">
+                        <polygon points="20,80 60,20 100,15 140,30 160,70 120,90 60,85" fill="rgba(32,199,60,0.3)" stroke="#20C73C" stroke-width="1.5"/>
+                        <polygon points="160,70 200,50 210,80 175,95" fill="rgba(255,200,0,0.2)" stroke="#FFC800" stroke-width="1.5"/>
+                        <circle cx="80" cy="55" r="5" fill="#20C73C"/>
+                        <circle cx="120" cy="50" r="4" fill="#74C69D"/>
+                        <circle cx="150" cy="72" r="4" fill="#FFC800"/>
+                      </svg>
+                      <div class="laptop-map__label">● Activos georreferenciados</div>
+                    </div>
+                    <div class="laptop-sectors">
+                      <div class="laptop-sector" style="color:#74C69D">Sector A · Verde ✓</div>
+                      <div class="laptop-sector" style="color:#FFC800">Sector B · Alerta ⚠</div>
+                      <div class="laptop-sector" style="color:#74C69D">Sector C · Verde ✓</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="laptop-base"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================
+         SLIDE 4 — MÓDULO 01: LEVANTAMIENTO
+         ================================================================ -->
+    <section class="slide slide--white" data-slide="3">
+      <div class="slide-header slide-header--border-light">
+        <span class="logo logo--dark">Baum<span>system</span></span>
+        <span class="slide-num" style="color:rgba(28,34,41,0.35)">04 / 12</span>
+      </div>
+      <div class="slide__inner">
+        <div class="module-layout">
+          <div>
+            <span class="module-tag module-tag--dark">Módulo 01</span>
+            <h2 class="h2">Inventario digital<br/>desde el día 1</h2>
+            <p class="body-lg" style="color:var(--c-text-mid);">Registra toda la infraestructura de riego del campo con georreferencia GPS, fotos y especificaciones técnicas por cada activo.</p>
+            <ul class="feature-list">
+              <li class="feature-item">
+                <div class="feature-icon"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+                <span class="feature-text"><strong>Árbol de activos:</strong> caseta → equipo → sector → bloque → válvula</span>
+              </li>
+              <li class="feature-item">
+                <div class="feature-icon"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+                <span class="feature-text"><strong>Códigos QR por activo:</strong> escanea y mide al instante desde el celular</span>
+              </li>
+              <li class="feature-item">
+                <div class="feature-icon"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+                <span class="feature-text"><strong>Georreferencia GPS:</strong> cada válvula y equipo en el mapa del campo</span>
+              </li>
+              <li class="feature-item">
+                <div class="feature-icon"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+                <span class="feature-text"><strong>Catálogo de marcas y modelos:</strong> estandariza el inventario técnico</span>
+              </li>
+            </ul>
+            <div class="highlight-box">"En 48–72 horas, el campo está 100% cargado en la plataforma. Listo para operar."</div>
+          </div>
+          <div style="display:flex; justify-content:center; align-items:center;">
+            <div class="phone-mockup" style="width:200px; height:380px;">
+              <div class="phone-mockup__notch"></div>
+              <div class="phone-mockup__screen">
+                <div style="padding:36px 10px 10px; height:100%; display:flex; flex-direction:column; gap:6px; overflow:hidden; background:#f8faf7;">
+                  <div style="font-size:9px;font-weight:800;color:var(--c-bg-dark);font-family:var(--font-sans);">Campo: San José Puangue</div>
+                  <div style="background:white;border-radius:8px;padding:8px;border:1px solid var(--c-border);">
+                    <div style="font-size:8px;color:var(--c-bg-dark);font-weight:700;font-family:var(--font-sans);">🏠 Caseta 1</div>
+                    <div style="margin-left:10px;margin-top:4px;">
+                      <div style="font-size:7px;color:#4A5568;font-family:var(--font-sans);padding:3px 0;border-left:2px solid var(--c-border);padding-left:6px;">⚙ Equipo de Riego 1</div>
+                      <div style="margin-left:10px;">
+                        <div style="font-size:6px;color:#4A5568;font-family:var(--font-sans);padding:2px 0;border-left:2px solid var(--c-border);padding-left:6px;">🔵 Sector A · Arándanos · 12 ha</div>
+                        <div style="font-size:6px;color:#4A5568;font-family:var(--font-sans);padding:2px 0;border-left:2px solid var(--c-border);padding-left:6px;">🔵 Sector B · Arándanos · 8 ha</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div style="background:white;border-radius:8px;padding:8px;border:1px solid var(--c-border);">
+                    <div style="font-size:8px;color:var(--c-bg-dark);font-weight:700;font-family:var(--font-sans);">🏠 Caseta 2</div>
+                    <div style="margin-left:10px;margin-top:4px;">
+                      <div style="font-size:7px;color:#4A5568;font-family:var(--font-sans);padding:3px 0;border-left:2px solid var(--c-border);padding-left:6px;">⚙ Equipo de Riego 2</div>
+                    </div>
+                  </div>
+                  <div style="background:var(--c-bg-dark);border-radius:8px;padding:8px;">
+                    <div style="font-size:7px;color:rgba(167,213,188,0.8);font-weight:600;font-family:var(--font-sans);margin-bottom:4px;">ACTIVOS LEVANTADOS</div>
+                    <div style="display:flex;gap:4px;flex-wrap:wrap;">
+                      <div style="background:rgba(255,255,255,0.1);border-radius:4px;padding:3px 5px;font-size:6px;color:white;font-family:var(--font-sans);">💧 12 Válvulas</div>
+                      <div style="background:rgba(255,255,255,0.1);border-radius:4px;padding:3px 5px;font-size:6px;color:white;font-family:var(--font-sans);">⚙ 3 Bombas</div>
+                      <div style="background:rgba(255,255,255,0.1);border-radius:4px;padding:3px 5px;font-size:6px;color:white;font-family:var(--font-sans);">🔧 4 Filtros</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================
+         SLIDE 5 — MÓDULO 02: MEDICIONES
+         ================================================================ -->
+    <section class="slide slide--light" data-slide="4">
+      <div class="slide-header slide-header--border-light">
+        <span class="logo logo--dark">Baum<span>system</span></span>
+        <span class="slide-num" style="color:rgba(28,34,41,0.35)">05 / 12</span>
+      </div>
+      <div class="slide__inner">
+        <div class="module-layout">
+          <div>
+            <span class="module-tag module-tag--dark">Módulo 02</span>
+            <h2 class="h2">Datos en tiempo real<br/>con semáforo de salud</h2>
+            <p class="body-lg" style="color:var(--c-text-mid);">Registra presiones, caudales y aforos desde la app móvil. Cada medición se valida automáticamente contra los rangos óptimos del diseño del sistema.</p>
+            <ul class="feature-list">
+              <li class="feature-item">
+                <div class="feature-icon"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+                <span class="feature-text"><strong>Semáforo automático:</strong> 🟢 óptimo · 🟡 advertencia · 🔴 crítico</span>
+              </li>
+              <li class="feature-item">
+                <div class="feature-icon"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+                <span class="feature-text"><strong>Modo offline:</strong> mide sin internet, sincroniza al volver a la red</span>
+              </li>
+              <li class="feature-item">
+                <div class="feature-icon"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+                <span class="feature-text"><strong>Cronómetro integrado:</strong> aforos con temporización exacta de 36 segundos</span>
+              </li>
+              <li class="feature-item">
+                <div class="feature-icon"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+                <span class="feature-text"><strong>Dashboard gerencial:</strong> % cumplimiento del plan de mediciones por campo</span>
+              </li>
+            </ul>
+            <div class="semaphore-demo">
+              <div class="semaphore-title">Estado del riego hoy</div>
+              <div class="semaphore-items">
+                <div class="semaphore-item"><div class="sem-dot sem-dot--green"></div><span>Sector A — Presión 2.1 bar (óptimo: 2.0)</span></div>
+                <div class="semaphore-item"><div class="sem-dot sem-dot--yellow"></div><span>Sector B — Presión 1.6 bar (mín: 1.8)</span></div>
+                <div class="semaphore-item"><div class="sem-dot sem-dot--red"></div><span>Filtro 2 — Diferencial alto · Falla activa</span></div>
+              </div>
+            </div>
+          </div>
+          <div style="display:flex; justify-content:center; align-items:center;">
+            <div class="phone-mockup" style="width:200px; height:380px;">
+              <div class="phone-mockup__notch"></div>
+              <div class="phone-mockup__screen">
+                <div style="padding:36px 10px 10px; height:100%; display:flex; flex-direction:column; gap:6px; overflow:hidden; background:#f8faf7;">
+                  <div style="font-size:9px;font-weight:800;color:var(--c-bg-dark);font-family:var(--font-sans);">Mediciones · Hoy</div>
+                  <div style="background:white;border-radius:8px;border:2px solid #22c55e;padding:8px;display:flex;justify-content:space-between;align-items:center;">
+                    <div><div style="font-size:7px;color:#4A5568;font-family:var(--font-sans);">Válvula A-01</div><div style="font-size:11px;font-weight:800;color:var(--c-bg-dark);font-family:var(--font-sans);">2.1 bar</div></div>
+                    <div style="width:18px;height:18px;border-radius:50%;background:#22c55e;box-shadow:0 0 8px #22c55e;"></div>
+                  </div>
+                  <div style="background:white;border-radius:8px;border:2px solid #f59e0b;padding:8px;display:flex;justify-content:space-between;align-items:center;">
+                    <div><div style="font-size:7px;color:#4A5568;font-family:var(--font-sans);">Válvula B-03</div><div style="font-size:11px;font-weight:800;color:var(--c-bg-dark);font-family:var(--font-sans);">1.6 bar</div></div>
+                    <div style="width:18px;height:18px;border-radius:50%;background:#f59e0b;box-shadow:0 0 8px #f59e0b;"></div>
+                  </div>
+                  <div style="background:white;border-radius:8px;border:2px solid var(--c-danger);padding:8px;display:flex;justify-content:space-between;align-items:center;">
+                    <div><div style="font-size:7px;color:#4A5568;font-family:var(--font-sans);">Filtro · Sector B</div><div style="font-size:11px;font-weight:800;color:var(--c-danger);font-family:var(--font-sans);">⚠ Falla</div></div>
+                    <div style="width:18px;height:18px;border-radius:50%;background:var(--c-danger);box-shadow:0 0 8px var(--c-danger);"></div>
+                  </div>
+                  <div style="background:var(--c-bg-dark);border-radius:8px;padding:8px;">
+                    <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
+                      <span style="font-size:7px;color:rgba(167,213,188,0.8);font-family:var(--font-sans);">Cumplimiento del plan</span>
+                      <span style="font-size:7px;color:#74C69D;font-weight:700;font-family:var(--font-sans);">87%</span>
+                    </div>
+                    <div style="background:rgba(255,255,255,0.1);border-radius:3px;height:4px;">
+                      <div style="width:87%;height:100%;background:var(--c-green);border-radius:3px;"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================
+         SLIDE 6 — MÓDULO 03: EVENTOS & FALLAS
+         ================================================================ -->
+    <section class="slide slide--white" data-slide="5">
+      <div class="slide-header slide-header--border-light">
+        <span class="logo logo--dark">Baum<span>system</span></span>
+        <span class="slide-num" style="color:rgba(28,34,41,0.35)">06 / 12</span>
+      </div>
+      <div class="slide__inner">
+        <div class="module-layout">
+          <div>
+            <span class="module-tag module-tag--dark">Módulo 03</span>
+            <h2 class="h2">De la falla detectada<br/>a la solución registrada</h2>
+            <p class="body-lg" style="color:var(--c-text-mid);">Registra fallas, mantenciones y observaciones sobre cada activo. Sigue el estado, asigna responsables y lleva el historial completo de intervenciones.</p>
+            <ul class="feature-list">
+              <li class="feature-item">
+                <div class="feature-icon"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+                <span class="feature-text"><strong>3 niveles de prioridad:</strong> Urgente (sin riego) · Media · Baja</span>
+              </li>
+              <li class="feature-item">
+                <div class="feature-icon"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+                <span class="feature-text"><strong>Categorización automática:</strong> hidráulica · eléctrica · telemetría</span>
+              </li>
+              <li class="feature-item">
+                <div class="feature-icon"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+                <span class="feature-text"><strong>Dashboard de resolución:</strong> tiempo promedio por prioridad, backlog</span>
+              </li>
+              <li class="feature-item">
+                <div class="feature-icon"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+                <span class="feature-text"><strong>Historial del activo:</strong> todos los eventos vinculados al componente</span>
+              </li>
+            </ul>
+            <div class="highlight-box">"Si una falla eléctrica se repite 5 veces en un mes, ya no es una falla: es una señal de inversión."</div>
+          </div>
+          <div style="display:flex; justify-content:center; align-items:center;">
+            <div class="phone-mockup" style="width:200px; height:380px;">
+              <div class="phone-mockup__notch"></div>
+              <div class="phone-mockup__screen">
+                <div style="padding:36px 10px 10px; height:100%; display:flex; flex-direction:column; gap:6px; overflow:hidden; background:#f8faf7;">
+                  <div style="font-size:9px;font-weight:800;color:var(--c-bg-dark);font-family:var(--font-sans);">Eventos · Pendientes</div>
+                  <div style="background:white;border-radius:8px;border-left:3px solid var(--c-danger);padding:8px;">
+                    <div style="font-size:7px;color:var(--c-danger);font-weight:700;font-family:var(--font-sans);">URGENTE · Falla hidráulica</div>
+                    <div style="font-size:8px;color:var(--c-bg-dark);font-weight:600;font-family:var(--font-sans);">Bomba de riego #2</div>
+                    <div style="font-size:6px;color:#8A9BA8;font-family:var(--font-sans);">Abierto hace 2 horas</div>
+                  </div>
+                  <div style="background:white;border-radius:8px;border-left:3px solid #f59e0b;padding:8px;">
+                    <div style="font-size:7px;color:#f59e0b;font-weight:700;font-family:var(--font-sans);">MEDIA · Filtro sucio</div>
+                    <div style="font-size:8px;color:var(--c-bg-dark);font-weight:600;font-family:var(--font-sans);">Filtro de arena · Caseta 1</div>
+                    <div style="font-size:6px;color:#8A9BA8;font-family:var(--font-sans);">Abierto hace 3 días</div>
+                  </div>
+                  <div style="background:white;border-radius:8px;border-left:3px solid #22c55e;padding:8px;">
+                    <div style="font-size:7px;color:#22c55e;font-weight:700;font-family:var(--font-sans);">BAJA · Mantención</div>
+                    <div style="font-size:8px;color:var(--c-bg-dark);font-weight:600;font-family:var(--font-sans);">Revisión programada · Motor</div>
+                    <div style="font-size:6px;color:#8A9BA8;font-family:var(--font-sans);">Próximo: 20 marzo</div>
+                  </div>
+                  <div style="background:var(--c-bg-dark);border-radius:8px;padding:8px;display:flex;justify-content:space-around;">
+                    <div style="text-align:center;"><div style="font-size:14px;font-weight:800;color:var(--c-danger);font-family:var(--font-sans);">1</div><div style="font-size:6px;color:rgba(167,213,188,0.7);font-family:var(--font-sans);">Urgente</div></div>
+                    <div style="text-align:center;"><div style="font-size:14px;font-weight:800;color:#f59e0b;font-family:var(--font-sans);">1</div><div style="font-size:6px;color:rgba(167,213,188,0.7);font-family:var(--font-sans);">Media</div></div>
+                    <div style="text-align:center;"><div style="font-size:14px;font-weight:800;color:#22c55e;font-family:var(--font-sans);">1</div><div style="font-size:6px;color:rgba(167,213,188,0.7);font-family:var(--font-sans);">Baja</div></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================
+         SLIDE 7 — MÓDULO 04: VISITAS & REPORTES
+         ================================================================ -->
+    <section class="slide slide--light" data-slide="6">
+      <div class="slide-header slide-header--border-light">
+        <span class="logo logo--dark">Baum<span>system</span></span>
+        <span class="slide-num" style="color:rgba(28,34,41,0.35)">07 / 12</span>
+      </div>
+      <div class="slide__inner">
+        <div class="module-layout">
+          <div>
+            <span class="module-tag module-tag--dark">Módulo 04</span>
+            <h2 class="h2">Reportes automáticos<br/>para la gerencia</h2>
+            <p class="body-lg" style="color:var(--c-text-mid);">Los supervisores Baumsystem documentan cada visita. El PDF llega automáticamente a la bandeja de entrada del gerente.</p>
+            <ul class="feature-list">
+              <li class="feature-item">
+                <div class="feature-icon"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+                <span class="feature-text"><strong>Reporte estructurado:</strong> observaciones, propuestas y tareas con responsable</span>
+              </li>
+              <li class="feature-item">
+                <div class="feature-icon"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+                <span class="feature-text"><strong>PDF automático:</strong> se genera en segundos y se envía por email</span>
+              </li>
+              <li class="feature-item">
+                <div class="feature-icon"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+                <span class="feature-text"><strong>Calendario integrado:</strong> las tareas se sincronizan automáticamente</span>
+              </li>
+              <li class="feature-item">
+                <div class="feature-icon"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+                <span class="feature-text"><strong>Health Score gerencial:</strong> cumplimiento, backlog, tendencias por campo</span>
+              </li>
+            </ul>
+          </div>
+          <div style="display:flex; justify-content:center; align-items:center;">
+            <div style="background:white; border:1px solid var(--c-border); border-radius:16px; padding:20px; box-shadow:0 12px 40px rgba(0,0,0,0.08); width:260px;">
+              <div style="display:flex;align-items:center;justify-content:space-between;padding-bottom:12px;border-bottom:1px solid var(--c-border);margin-bottom:12px;">
+                <div>
+                  <div style="font-size:10px;font-weight:800;color:var(--c-bg-dark);font-family:var(--font-sans);">REPORTE DE VISITA</div>
+                  <div style="font-size:7px;color:#8A9BA8;font-family:var(--font-sans);">Baumsystem · 12 marzo 2026</div>
+                </div>
+                <div style="background:var(--c-bg-dark);border-radius:4px;padding:4px 8px;font-size:7px;color:white;font-family:var(--font-sans);">PDF ↓</div>
+              </div>
+              <div style="padding:8px 0;border-bottom:1px solid var(--c-border);margin-bottom:8px;">
+                <div style="font-size:7px;font-weight:700;color:var(--c-green-dark);font-family:var(--font-sans);letter-spacing:0.05em;margin-bottom:4px;">OBSERVACIONES</div>
+                <div style="font-size:7px;color:#4A5568;font-family:var(--font-sans);line-height:1.5;">• Presión baja en Sector B. Revisar filtro de arena Caseta 1 con prioridad media.</div>
+              </div>
+              <div style="padding:8px 0;border-bottom:1px solid var(--c-border);margin-bottom:8px;">
+                <div style="font-size:7px;font-weight:700;color:var(--c-green-dark);font-family:var(--font-sans);letter-spacing:0.05em;margin-bottom:4px;">TAREAS ASIGNADAS</div>
+                <div style="font-size:7px;color:#4A5568;font-family:var(--font-sans);line-height:1.5;">
+                  <div style="display:flex;justify-content:space-between;"><span>Limpieza filtro Caseta 1</span><span style="color:var(--c-danger)">20/03</span></div>
+                  <div style="display:flex;justify-content:space-between;"><span>Aforo Sector A completo</span><span style="color:#f59e0b">25/03</span></div>
+                </div>
+              </div>
+              <div style="padding:8px 0;">
+                <div style="font-size:7px;font-weight:700;color:var(--c-green-dark);font-family:var(--font-sans);letter-spacing:0.05em;margin-bottom:6px;">HEALTH SCORE</div>
+                <div style="display:flex;align-items:center;gap:10px;">
+                  <div style="font-size:28px;font-weight:800;color:var(--c-bg-dark);font-family:var(--font-sans);">94</div>
+                  <div>
+                    <div style="font-size:6px;color:#4A5568;font-family:var(--font-sans);">Operación estable</div>
+                    <div style="width:90px;background:var(--c-green-xlight);border-radius:3px;height:5px;margin-top:3px;">
+                      <div style="width:94%;height:100%;background:var(--c-bg-dark);border-radius:3px;"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================
+         SLIDE 8 — KPIs
+         ================================================================ -->
+    <section class="slide slide--dark" data-slide="7">
+      <div class="bg-decor">
+        <div class="bg-circle bg-circle--1"></div>
+        <div class="bg-circle bg-circle--2"></div>
+      </div>
+      <div class="slide-header slide-header--border">
+        <span class="logo logo--light">Baum<span>system</span></span>
+        <span class="slide-num" style="color:rgba(255,255,255,0.35)">08 / 12</span>
+      </div>
+      <div class="slide__inner">
+        <div class="section-header">
+          <div class="label label--green">En Números</div>
+          <h2 class="h2">Resultados que hablan<br/>por sí solos.</h2>
+          <p class="body-lg" style="color:rgba(255,255,255,0.55);">Baumsystem gestiona campos en Chile y México. La plataforma crece junto con sus clientes.</p>
+        </div>
+        <div class="kpi-grid">
+          <div class="kpi-card">
+            <div class="kpi-num" id="kpi1">+10.000</div>
+            <div class="kpi-lbl">Hectáreas bajo servicio</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-num">2</div>
+            <div class="kpi-lbl">Países (Chile y México)</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-num">+3.834</div>
+            <div class="kpi-lbl">Ha en pipeline internacional</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================
+         SLIDE 9 — PROCESO
+         ================================================================ -->
+    <section class="slide slide--accent" data-slide="8">
+      <div class="slide-header slide-header--border-light">
+        <span class="logo logo--dark">Baum<span>system</span></span>
+        <span class="slide-num" style="color:rgba(28,34,41,0.35)">09 / 12</span>
+      </div>
+      <div class="slide__inner slide__inner--center">
+        <div class="section-header" style="text-align:center; align-items:center;">
+          <div class="label label--dark">Implementación</div>
+          <h2 class="h2">Operativo en 4 pasos.<br/>Sin complicaciones.</h2>
+          <p class="body-lg" style="color:var(--c-text-mid); text-align:center; max-width:600px;">Baumsystem acompaña cada etapa del proceso. Desde el primer levantamiento hasta la primera medición.</p>
+        </div>
+        <div class="process-grid">
+          <div class="process-step">
+            <div class="step-num">01</div>
+            <div class="step-content">
+              <span class="step-duration">1–3 días</span>
+              <div class="step-title">Levantamiento Inicial</div>
+              <p class="step-body">Nuestro equipo visita el campo y registra toda la infraestructura. En 48–72h el campo está 100% cargado.</p>
+            </div>
+          </div>
+          <div class="process-step">
+            <div class="step-num">02</div>
+            <div class="step-content">
+              <span class="step-duration">1 día</span>
+              <div class="step-title">Capacitación</div>
+              <p class="step-body">Entrenamos a caseteros y administradores. El operador hace su primera medición el mismo día.</p>
+            </div>
+          </div>
+          <div class="process-step">
+            <div class="step-num">03</div>
+            <div class="step-content">
+              <span class="step-duration">Continuo</span>
+              <div class="step-title">Operación en Tiempo Real</div>
+              <p class="step-body">Los caseteros registran mediciones y eventos. Supervisores Baumsystem realizan visitas periódicas.</p>
+            </div>
+          </div>
+          <div class="process-step">
+            <div class="step-num">04</div>
+            <div class="step-content">
+              <span class="step-duration">Continuo</span>
+              <div class="step-title">Análisis &amp; Decisión</div>
+              <p class="step-body">Gerencia accede a reportes automáticos con Health Score, ranking de activos y proyecciones.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================
+         SLIDE 10 — BENEFICIOS
+         ================================================================ -->
+    <section class="slide slide--white" data-slide="9">
+      <div class="slide-header slide-header--border-light">
+        <span class="logo logo--dark">Baum<span>system</span></span>
+        <span class="slide-num" style="color:rgba(28,34,41,0.35)">10 / 12</span>
+      </div>
+      <div class="slide__inner">
+        <div class="section-header">
+          <div class="label label--dark">Beneficios</div>
+          <h2 class="h2">Lo que Baumsystem<br/>le entrega a tu campo.</h2>
+          <p class="body-lg" style="color:var(--c-text-mid);">No es solo software. Es el sistema operativo de tu campo de riego.</p>
+        </div>
+        <div class="benefits-grid">
+          <div class="benefit-card">
+            <div class="benefit-icon"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></div>
+            <div class="benefit-title">Visibilidad 100% del riego</div>
+            <p class="benefit-body">Sabe exactamente qué pasa en cada válvula, bomba y filtro. En tiempo real, desde tu celular o computador.</p>
+          </div>
+          <div class="benefit-card">
+            <div class="benefit-icon"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg></div>
+            <div class="benefit-title">Cero fallas invisibles</div>
+            <p class="benefit-body">Detecta desviaciones antes de que causen daño al cultivo. Reduce el tiempo de respuesta ante fallas de días a horas.</p>
+          </div>
+          <div class="benefit-card">
+            <div class="benefit-icon"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg></div>
+            <div class="benefit-title">Historial indestructible</div>
+            <p class="benefit-body">Todo queda registrado en la nube. Aunque cambie el operador, el historial del activo permanece intacto.</p>
+          </div>
+          <div class="benefit-card">
+            <div class="benefit-icon"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 1v3M12 20v3M4.22 4.22l2.12 2.12M17.66 17.66l2.12 2.12M1 12h3M20 12h3M4.22 19.78l2.12-2.12M17.66 6.34l2.12-2.12"/></svg></div>
+            <div class="benefit-title">Uniformidad del riego</div>
+            <p class="benefit-body">Con datos de presión y caudal por bloque, identifica sectores fuera de rango. Protege tu cultivo y reduce consumo de agua.</p>
+          </div>
+          <div class="benefit-card">
+            <div class="benefit-icon"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div>
+            <div class="benefit-title">Reportes sin esfuerzo</div>
+            <p class="benefit-body">El gerente recibe un resumen ejecutivo automático. La plataforma lo genera y lo envía sola.</p>
+          </div>
+          <div class="benefit-card">
+            <div class="benefit-icon"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+            <div class="benefit-title">Equipo Baumsystem en terreno</div>
+            <p class="benefit-body">No es solo software — tienes agrónomos expertos que conocen tu campo y te acompañan en toda la operación.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================
+         SLIDE 11 — CRECIMIENTO
+         ================================================================ -->
+    <section class="slide slide--light" data-slide="10">
+      <div class="slide-header slide-header--border-light">
+        <span class="logo logo--dark">Baum<span>system</span></span>
+        <span class="slide-num" style="color:rgba(28,34,41,0.35)">11 / 12</span>
+      </div>
+      <div class="slide__inner">
+        <div class="growth-layout">
+          <div>
+            <div class="label label--dark">Crecimiento</div>
+            <h2 class="h2">De 1.200 a +10.000<br/>ha en 4 años.</h2>
+            <p class="body-lg" style="color:var(--c-text-mid);">Crecimiento orgánico, cliente a cliente. La confianza se construye en terreno, los resultados se ven en los datos.</p>
+            <div class="milestones">
+              <div class="milestone"><span class="milestone-year">2022</span><span class="milestone-desc">Primera expansión fuera de la región de origen</span></div>
+              <div class="milestone"><span class="milestone-year">2024</span><span class="milestone-desc">Expansión a México · Primer cliente internacional</span></div>
+              <div class="milestone"><span class="milestone-year">2025</span><span class="milestone-desc">Superación de 10.000 hectáreas bajo servicio</span></div>
+              <div class="milestone"><span class="milestone-year">2026</span><span class="milestone-desc">Pipeline de +3.800 ha en Perú y México</span></div>
+            </div>
+          </div>
+          <div class="chart-wrap">
+            <canvas id="growthChart"></canvas>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================
+         SLIDE 12 — CTA
+         ================================================================ -->
+    <section class="slide slide--dark" data-slide="11">
+      <div class="bg-decor">
+        <div class="bg-circle" style="width:700px;height:700px;background:radial-gradient(circle,rgba(32,199,60,0.07) 0%,transparent 70%);right:-200px;top:-200px;"></div>
+        <div class="bg-circle" style="width:500px;height:500px;background:radial-gradient(circle,rgba(32,199,60,0.05) 0%,transparent 70%);left:-150px;bottom:-150px;"></div>
+      </div>
+      <div class="slide-header slide-header--border">
+        <span class="logo logo--light">Baum<span>system</span></span>
+        <span class="slide-num" style="color:rgba(255,255,255,0.35)">12 / 12</span>
+      </div>
+      <div class="slide__inner slide__inner--center">
+        <div style="margin-bottom:16px;">
+          <span style="font-family:var(--font-display);font-size:2.5rem;font-weight:800;color:white;letter-spacing:-0.03em;">Baum<span style="color:var(--c-green)">system</span></span>
+        </div>
+        <h2 class="h2" style="max-width:700px; line-height:1.1;">¿Listo para tener control<br/>total de tu riego?</h2>
+        <p class="body-lg" style="color:rgba(255,255,255,0.6); max-width:520px; margin-top:12px;">
+          Agenda una demo con nuestro equipo. En 30 minutos te mostramos cómo Baumsystem transforma la operación de tu campo.
+        </p>
+        <div class="cta-actions">
+          <a href="mailto:b.sepulveda@baumsystem.com?subject=Solicitud%20de%20Demo%20Baumsystem" class="btn btn--primary" style="font-size:1rem; padding:16px 32px;">
+            Agendar Demo Gratuita
+            <svg class="btn__arrow" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+          </a>
+          <a href="mailto:b.sepulveda@baumsystem.com" class="btn btn--outline" style="font-size:1rem; padding:16px 32px;">
+            b.sepulveda@baumsystem.com
+          </a>
+        </div>
+        <div class="cta-proof">
+          <div class="cta-proof-item">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            Sin compromiso
+          </div>
+          <div class="cta-proof-item">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            Demo personalizada para tu campo
+          </div>
+          <div class="cta-proof-item">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            Respuesta en 24 horas
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div><!-- /presentation -->
+
+  <!-- Navigation -->
+  <div id="nav">
+    <button class="nav-btn" id="prevBtn" onclick="prevSlide()" disabled>
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 4L6 8l4 4"/></svg>
+    </button>
+    <span id="slideCounter">1 / 12</span>
+    <button class="nav-btn" id="nextBtn" onclick="nextSlide()">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 4l4 4-4 4"/></svg>
+    </button>
+  </div>
+
+  <!-- Chart.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+
+  <script>
+    const TOTAL_SLIDES = 12;
+    let current = 0;
+
+    const slides   = document.querySelectorAll('.slide');
+    const prevBtn  = document.getElementById('prevBtn');
+    const nextBtn  = document.getElementById('nextBtn');
+    const counter  = document.getElementById('slideCounter');
+    const progress = document.getElementById('progressBar');
+    const dotsEl   = document.getElementById('dots');
+
+    // Build dots
+    slides.forEach((_, i) => {
+      const d = document.createElement('div');
+      d.className = 'dot' + (i === 0 ? ' active' : '');
+      d.addEventListener('click', () => goTo(i));
+      dotsEl.appendChild(d);
+    });
+
+    function goTo(n) {
+      slides[current].classList.remove('active');
+      current = Math.max(0, Math.min(n, TOTAL_SLIDES - 1));
+      slides[current].classList.add('active');
+      updateUI();
+      if (current === 10) initChart();
+    }
+
+    function nextSlide() { if (current < TOTAL_SLIDES - 1) goTo(current + 1); }
+    function prevSlide() { if (current > 0) goTo(current - 1); }
+
+    function updateUI() {
+      counter.textContent = (current + 1) + ' / ' + TOTAL_SLIDES;
+      prevBtn.disabled = current === 0;
+      nextBtn.disabled = current === TOTAL_SLIDES - 1;
+      const pct = ((current) / (TOTAL_SLIDES - 1)) * 100;
+      progress.style.width = pct + '%';
+      dotsEl.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === current));
+    }
+
+    // Keyboard navigation
+    document.addEventListener('keydown', e => {
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') { e.preventDefault(); nextSlide(); }
+      if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')                     { e.preventDefault(); prevSlide(); }
+    });
+
+    // Touch swipe
+    let touchX = 0;
+    document.addEventListener('touchstart', e => { touchX = e.changedTouches[0].clientX; });
+    document.addEventListener('touchend',   e => {
+      const dx = e.changedTouches[0].clientX - touchX;
+      if (Math.abs(dx) > 50) { dx < 0 ? nextSlide() : prevSlide(); }
+    });
+
+    // Fullscreen
+    document.getElementById('fullscreenBtn').addEventListener('click', () => {
+      if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+      else document.exitFullscreen();
+    });
+
+    // Growth chart (slide 11)
+    let chartInit = false;
+    function initChart() {
+      if (chartInit) return;
+      chartInit = true;
+      const ctx = document.getElementById('growthChart').getContext('2d');
+      new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: ['2020', '2021', '2022', '2023', '2024', '2025', '2026*'],
+          datasets: [{
+            label: 'Hectáreas',
+            data: [1200, 2100, 3800, 5200, 7100, 10000, 13800],
+            borderColor: '#20C73C',
+            backgroundColor: 'rgba(32,199,60,0.08)',
+            borderWidth: 3,
+            pointBackgroundColor: '#20C73C',
+            pointRadius: 5,
+            pointHoverRadius: 7,
+            fill: true,
+            tension: 0.4
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: { label: ctx => ' ' + ctx.parsed.y.toLocaleString('es-CL') + ' ha' }
+            }
+          },
+          scales: {
+            x: { grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { font: { family: 'Nunito', size: 11 }, color: '#8A9BA8' } },
+            y: {
+              grid: { color: 'rgba(0,0,0,0.04)' },
+              ticks: { font: { family: 'Nunito', size: 11 }, color: '#8A9BA8', callback: v => v.toLocaleString('es-CL') }
+            }
+          }
+        }
+      });
+    }
+
+    // Init
+    updateUI();
+  </script>
+</body>
+</html>

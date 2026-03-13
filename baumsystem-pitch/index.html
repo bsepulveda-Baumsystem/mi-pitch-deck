@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Baumsystem — Presentaciones Comerciales</title>
+  <meta name="description" content="Baumsystem: plataforma de gestión de sistemas de riego agrícola." />
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Shared styles -->
+  <link rel="stylesheet" href="shared/css/base.css" />
+
+  <style>
+    /* Landing page specific overrides */
+    body { background: #F5F8F5; }
+
+    .landing-hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 120px 2rem 4rem;
+      background: linear-gradient(135deg, #F5F8F5 0%, #E8F5E9 60%, #D8F3DC 100%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .landing-hero__decor {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .landing-hero__decor-circle {
+      position: absolute;
+      border-radius: 50%;
+    }
+
+    .landing-hero__decor-circle--1 {
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(82,183,136,0.12) 0%, transparent 70%);
+      right: -150px; top: -150px;
+    }
+
+    .landing-hero__decor-circle--2 {
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(27,67,50,0.06) 0%, transparent 70%);
+      left: -100px; bottom: -100px;
+    }
+
+    .landing-hero__content {
+      position: relative;
+      z-index: 1;
+      max-width: 700px;
+    }
+
+    .landing-hero__badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 16px;
+      background: rgba(27,67,50,0.08);
+      border: 1px solid rgba(27,67,50,0.15);
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #1B4332;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 24px;
+    }
+
+    .landing-hero__logo {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2.5rem, 8vw, 5rem);
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      color: #1B4332;
+      line-height: 1;
+      margin-bottom: 16px;
+    }
+
+    .landing-hero__logo span { color: #52B788; }
+
+    .landing-hero__sub {
+      font-size: clamp(1rem, 2.5vw, 1.2rem);
+      color: #4A5D4C;
+      line-height: 1.6;
+      margin-bottom: 48px;
+    }
+
+    /* Presentations grid */
+    .landing-grid {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 2rem 5rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+    }
+
+    .landing-card {
+      background: white;
+      border: 1px solid #C9E0CA;
+      border-radius: 20px;
+      padding: 32px;
+      text-decoration: none;
+      color: inherit;
+      transition: transform 300ms ease, box-shadow 300ms ease, border-color 300ms ease;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .landing-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 24px 64px rgba(0,0,0,0.1);
+      border-color: #52B788;
+    }
+
+    .landing-card__badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      width: fit-content;
+    }
+
+    .landing-card__badge--active {
+      background: #D8F3DC;
+      color: #1B4332;
+      border: 1px solid #52B788;
+    }
+
+    .landing-card__badge--coming {
+      background: #F3F4F6;
+      color: #9CA3AF;
+      border: 1px solid #E5E7EB;
+    }
+
+    .landing-card__icon {
+      width: 56px;
+      height: 56px;
+      border-radius: 14px;
+      background: #D8F3DC;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #1B4332;
+    }
+
+    .landing-card__title {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.375rem;
+      font-weight: 800;
+      color: #1B4332;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+    }
+
+    .landing-card__desc {
+      font-size: 0.875rem;
+      color: #4A5D4C;
+      line-height: 1.7;
+    }
+
+    .landing-card__cta {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: #52B788;
+      margin-top: auto;
+    }
+
+    .landing-card:hover .landing-card__cta svg {
+      transform: translateX(4px);
+    }
+
+    .landing-card__cta svg {
+      transition: transform 200ms ease;
+    }
+
+    .landing-card--disabled {
+      opacity: 0.55;
+      pointer-events: none;
+    }
+
+    /* Footer */
+    .landing-footer {
+      text-align: center;
+      padding: 2rem;
+      font-size: 0.75rem;
+      color: #8FA890;
+      border-top: 1px solid #C9E0CA;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Minimal nav -->
+  <nav class="site-nav" id="siteNav">
+    <span class="nav-logo">Baum<span>system</span></span>
+  </nav>
+
+  <!-- Hero -->
+  <section class="landing-hero">
+    <div class="landing-hero__decor" aria-hidden="true">
+      <div class="landing-hero__decor-circle landing-hero__decor-circle--1"></div>
+      <div class="landing-hero__decor-circle landing-hero__decor-circle--2"></div>
+    </div>
+
+    <div class="landing-hero__content">
+      <div class="landing-hero__badge">
+        <svg width="8" height="8" viewBox="0 0 8 8" fill="currentColor"><circle cx="4" cy="4" r="4"/></svg>
+        Presentaciones Comerciales
+      </div>
+      <h1 class="landing-hero__logo">Baum<span>system</span></h1>
+      <p class="landing-hero__sub">
+        Selecciona la presentación correspondiente<br/>al cliente que deseas visitar.
+      </p>
+    </div>
+  </section>
+
+  <!-- Presentations grid -->
+  <div class="landing-grid">
+
+    <!-- Baumsystem main pitch -->
+    <a href="brands/baumsystem/" class="landing-card">
+      <div class="landing-card__badge landing-card__badge--active">
+        <svg width="8" height="8" viewBox="0 0 8 8" fill="currentColor"><circle cx="4" cy="4" r="4"/></svg>
+        Activo
+      </div>
+      <div class="landing-card__icon">
+        <svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+          <path d="M12 2a7 7 0 1 0 0 14A7 7 0 0 0 12 2z"/>
+          <path d="M16.24 7.76a6 6 0 0 1 0 8.49M7.76 16.24a6 6 0 0 1 0-8.49"/>
+          <path d="M12 8v4l3 3"/>
+        </svg>
+      </div>
+      <div class="landing-card__title">Pitch Comercial<br/>Baumsystem</div>
+      <div class="landing-card__desc">Presentación completa de la plataforma: levantamiento, mediciones, eventos, reportería y beneficios para el cliente. Adaptable a cualquier prospecto.</div>
+      <div class="landing-card__cta">
+        Ver presentación
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M3 8h10M9 4l4 4-4 4"/>
+        </svg>
+      </div>
+    </a>
+
+    <!-- Placeholder 2 -->
+    <div class="landing-card landing-card--disabled">
+      <div class="landing-card__badge landing-card__badge--coming">Próximamente</div>
+      <div class="landing-card__icon" style="background:#F3F4F6;color:#9CA3AF;">
+        <svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+          <rect x="3" y="3" width="18" height="18" rx="3"/>
+          <path d="M12 8v8M8 12h8"/>
+        </svg>
+      </div>
+      <div class="landing-card__title" style="color:#9CA3AF;">Nueva Presentación</div>
+      <div class="landing-card__desc" style="color:#9CA3AF;">Agrega aquí una nueva presentación para otro cliente o segmento. Crea la carpeta en /brands/nombre-cliente/.</div>
+      <div class="landing-card__cta" style="color:#9CA3AF;">
+        Próximamente
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Footer -->
+  <footer class="landing-footer">
+    © 2026 Baumsystem · Chile · México · b.sepulveda@baumsystem.com
+  </footer>
+
+  <!-- GSAP for nav scroll effect -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="shared/js/core.js"></script>
+  <script>
+    // Animate cards on load
+    if (typeof gsap !== 'undefined') {
+      gsap.from('.landing-hero__content > *', {
+        opacity: 0,
+        y: 30,
+        stagger: 0.15,
+        duration: 0.8,
+        ease: 'power2.out',
+        delay: 0.2
+      });
+
+      gsap.from('.landing-card', {
+        opacity: 0,
+        y: 40,
+        stagger: 0.15,
+        duration: 0.7,
+        ease: 'power2.out',
+        delay: 0.6
+      });
+    }
+  </script>
+</body>
+</html>

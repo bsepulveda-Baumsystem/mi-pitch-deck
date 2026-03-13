@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Baumsystem 2026 — Pitch Comercial</title>
+    <!-- Modern Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <style>
+        :root {
+            --primary: #10B981;
+            /* Emerald 500 */
+            --primary-dark: #059669;
+            /* Emerald 600 */
+            --primary-light: #34D399;
+            /* Emerald 400 */
+            --bg-dark: #0A0F1E;
+            /* Deep Slate */
+            --bg-card: rgba(255, 255, 255, 0.05);
+            --text-main: #F8FAFC;
+            --text-dim: #94A3B8;
+            --text-accent: #10B981;
+            --danger: #EF4444;
+            --warning: #F59E0B;
+            --font-display: 'Outfit', sans-serif;
+            --font-body: 'Inter', sans-serif;
+            --glass: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body,
+        html {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: var(--font-body);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Slide System */
+        #presentation {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+        }
+
+        .slide {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.8s;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 4rem;
+        }
+
+        .slide.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Background Decorations */
+        .bg-glow {
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(16, 185, 129, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Typography */
+        h1,
+        h2,
+        h3 {
+            font-family: var(--font-display);
+            letter-spacing: -0.02em;
+        }
+
+        .hero-title {
+            font-size: 5rem;
+            font-weight: 800;
+            line-height: 1;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(to right, #fff, #94A3B8);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-title span {
+            background: linear-gradient(to right, var(--primary-light), var(--primary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .section-title {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .subtitle {
+            font-size: 1.25rem;
+            color: var(--text-dim);
+            max-width: 600px;
+            line-height: 1.6;
+        }
+
+        /* Grid Layouts */
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            width: 100%;
+            margin-top: 3rem;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+            width: 100%;
+        }
+
+        /* Components */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--glass-border);
+            border-radius: 1.5rem;
+            padding: 2.5rem;
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s, border-color 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+        }
+
+        .card-icon {
+            width: 3rem;
+            height: 3rem;
+            background: rgba(16, 185, 129, 0.1);
+            border-radius: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+        }
+
+        .stat-value {
+            font-family: var(--font-display);
+            font-size: 4rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 1rem;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-weight: 600;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            border-radius: 999px;
+            color: var(--primary);
+            font-weight: 600;
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Navigation */
+        .nav-controls {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 1rem;
+            z-index: 100;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+            padding: 0.75rem;
+            border-radius: 1rem;
+            border: 1px solid var(--glass-border);
+        }
+
+        .nav-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-main);
+            width: 3rem;
+            height: 3rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+
+        .nav-btn:hover {
+            background: var(--bg-card);
+        }
+
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 4px;
+            background: var(--primary);
+            z-index: 1000;
+            transition: width 0.3s;
+        }
+
+        /* Images */
+        .image-container {
+            position: relative;
+            border-radius: 2rem;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--glass-border);
+        }
+
+        .image-container img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .image-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, var(--bg-dark), transparent);
+            opacity: 0.4;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .active .animate-up {
+            animation: fadeInUp 0.8s forwards;
+        }
+
+        .active .del-1 {
+            animation-delay: 0.2s;
+        }
+
+        .active .del-2 {
+            animation-delay: 0.4s;
+        }
+
+        .active .del-3 {
+            animation-delay: 0.6s;
+        }
+
+        /* Custom Styles for Specific Slides */
+        .problem-text {
+            color: var(--danger);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .health-score-ring {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            border: 15px solid rgba(16, 185, 129, 0.1);
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .health-score-ring::after {
+            content: '85%';
+            font-size: 3rem;
+            font-weight: 800;
+            font-family: var(--font-display);
+        }
+
+        .health-score-ring-fill {
+            position: absolute;
+            inset: -15px;
+            border-radius: 50%;
+            border: 15px solid var(--primary);
+            clip-path: polygon(50% 50%, 50% 0%, 100% 0%, 100% 100%, 0% 100%, 0% 0%, 50% 0%);
+            /* Simplified clip math for demo */
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="progress-bar" id="progressBar" style="width: 10%"></div>
+
+    <div id="presentation">
+
+        <!-- SLIDE 1: HERO -->
+        <section class="slide active">
+            <div class="bg-glow" style="top: -100px; right: -100px;"></div>
+            <div class="container grid-2">
+                <div class="content">
+                    <div class="badge animate-up">OPERACIÓN AGRÍCOLA 2.0</div>
+                    <h1 class="hero-title animate-up del-1">Control Total<span> del Riego.</span></h1>
+                    <p class="subtitle animate-up del-2">La plataforma que transforma datos en decisiones estratégicas:
+                        desde el terreno hasta la gerencia.</p>
+                </div>
+                <div class="image-container animate-up del-3">
+                    <img src="baumsystem_hero_dashboard_1773420590428.png" alt="Baumsystem Hero">
+                    <div class="image-overlay"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 2: EL PROBLEMA -->
+        <section class="slide">
+            <div class="container">
+                <div class="badge">EL DESAFÍO</div>
+                <h2 class="section-title">La Ceguera Operativa</h2>
+                <div class="grid-3">
+                    <div class="card animate-up">
+                        <div class="card-icon">✕</div>
+                        <h3>Riego a Ciegas</h3>
+                        <p class="problem-text">Incertidumbre Total</p>
+                        <p style="color: var(--text-dim)">Sin datos en tiempo real, las fallas pasan desapercibidas
+                            hasta que el daño al cultivo es irreversible.</p>
+                    </div>
+                    <div class="card animate-up del-1">
+                        <div class="card-icon">✕</div>
+                        <h3>Historial Perdido</h3>
+                        <p class="problem-text">Dependencia Personal</p>
+                        <p style="color: var(--text-dim)">El conocimiento vive en cuadernos o en la cabeza del operador.
+                            Si el equipo rota, la historia se borra.</p>
+                    </div>
+                    <div class="card animate-up del-2">
+                        <div class="card-icon">✕</div>
+                        <h3>Decisiones sin Datos</h3>
+                        <p class="problem-text">Inversión Reactiva</p>
+                        <p style="color: var(--text-dim)">Gerencia invierte basándose en opiniones, no en métricas de
+                            recurrencia o impacto real de fallas.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 3: LA SOLUCIÓN -->
+        <section class="slide">
+            <div class="bg-glow" style="bottom: -100px; left: -100px;"></div>
+            <div class="container grid-2">
+                <div class="content">
+                    <div class="badge">BAUMSYSTEM SOLUTION</div>
+                    <h2 class="section-title">Visibilidad, Control y Trazabilidad.</h2>
+                    <p class="subtitle" style="margin-bottom: 2rem;">No somos solo software. Somos el Twin Digital de tu
+                        operación de riego.</p>
+                    <ul style="list-style: none; display: grid; gap: 1rem;">
+                        <li style="display: flex; gap: 1rem; align-items: start;">
+                            <span style="color: var(--primary); font-weight: bold;">✓</span>
+                            <div><strong>Inventario Digital:</strong> Cada válvula y bomba mapeada con GPS y QR.</div>
+                        </li>
+                        <li style="display: flex; gap: 1rem; align-items: start;">
+                            <span style="color: var(--primary); font-weight: bold;">✓</span>
+                            <div><strong>Validación en Tiempo Real:</strong> Semáforos inteligentes
+                                (Verde/Naranja/Rojo).</div>
+                        </li>
+                        <li style="display: flex; gap: 1rem; align-items: start;">
+                            <span style="color: var(--primary); font-weight: bold;">✓</span>
+                            <div><strong>Reportería Automática:</strong> El "Lunes a las 8 AM" que gerencia necesita.
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="image-container">
+                    <img src="baumsystem_reports_mockup_1773420623686.png" alt="Baumsystem Reports">
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 4: HEALTH SCORE -->
+        <section class="slide">
+            <div class="container" style="text-align: center;">
+                <div class="badge">MÉTRICA MADRE</div>
+                <h2 class="section-title">The Baum Health Score</h2>
+                <div style="display: flex; justify-content: center; margin: 3rem 0;">
+                    <div class="health-score-ring">
+                        <div class="health-score-ring-fill"></div>
+                    </div>
+                </div>
+                <div class="grid-3">
+                    <div class="card">
+                        <h3>Uniformidad</h3>
+                        <p style="color: var(--primary); font-size: 1.5rem; font-weight: 700;">Mediciones</p>
+                        <p style="font-size: 0.875rem; color: var(--text-dim); margin-top: 0.5rem;">Cruce de presiones y
+                            caudales vs. diseño óptimo.</p>
+                    </div>
+                    <div class="card">
+                        <h3>Gestión</h3>
+                        <p style="color: var(--primary); font-size: 1.5rem; font-weight: 700;">Eventos</p>
+                        <p style="font-size: 0.875rem; color: var(--text-dim); margin-top: 0.5rem;">Efectividad en la
+                            resolución de fallas críticas.</p>
+                    </div>
+                    <div class="card">
+                        <h3>Disciplina</h3>
+                        <p style="color: var(--primary); font-size: 1.5rem; font-weight: 700;">Calendario</p>
+                        <p style="font-size: 0.875rem; color: var(--text-dim); margin-top: 0.5rem;">Cumplimiento de la
+                            pauta de mediciones del equipo.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 5: TRACCIÓN -->
+        <section class="slide">
+            <div class="container">
+                <div class="badge">CONFIANZA Y ESCALA</div>
+                <h2 class="section-title">Expansión Global</h2>
+                <div class="grid-3" style="margin-bottom: 3rem;">
+                    <div class="card" style="text-align: center;">
+                        <div class="stat-value">10k+</div>
+                        <div class="stat-label">Hectáreas en Servicio</div>
+                    </div>
+                    <div class="card" style="text-align: center;">
+                        <div class="stat-value">3.8k</div>
+                        <div class="stat-label">Ha en Pipeline Int.</div>
+                    </div>
+                    <div class="card" style="text-align: center;">
+                        <div class="stat-value">98%</div>
+                        <div class="stat-label">Retención Clientes</div>
+                    </div>
+                </div>
+                <div class="card" style="background: rgba(16, 185, 129, 0.05); border-color: rgba(16, 185, 129, 0.3);">
+                    <h3 style="margin-bottom: 1.5rem;">Principales Clientes & Prospectos</h3>
+                    <div style="display: flex; flex-wrap: wrap; gap: 2rem; justify-content: space-around;">
+                        <div style="text-align: center;">
+                            <div style="font-size: 1.5rem; font-weight: 700;">Agroberries México</div>
+                            <div style="color: var(--primary);">2,000+ Ha</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="font-size: 1.5rem; font-weight: 700;">Bafar México</div>
+                            <div style="color: var(--primary);">1,900+ Ha</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="font-size: 1.5rem; font-weight: 700;">Agroberries Perú</div>
+                            <div style="color: var(--primary);">1,300+ Ha</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="font-size: 1.5rem; font-weight: 700;">Agrícola Bluegold</div>
+                            <div style="color: var(--primary);">400+ Ha</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 6: ONBOARDING 2.0 -->
+        <section class="slide">
+            <div class="container grid-2">
+                <div class="content">
+                    <div class="badge">TECNOLOGÍA PROPIA</div>
+                    <h2 class="section-title">Onboarding Digital 2.0</h2>
+                    <p class="subtitle" style="margin-bottom: 2rem;">Eliminamos los cuellos de botella para que tu campo
+                        esté operativo en tiempo récord.</p>
+                    <div class="card" style="margin-bottom: 1rem;">
+                        <h4 style="color: var(--primary);">Mapeo Automático KMZ</h4>
+                        <p style="font-size: 0.9rem; color: var(--text-dim);">Reducimos el tiempo de estructuración de
+                            días a horas mediante algoritmos de validación de polígonos y puntos GPS.</p>
+                    </div>
+                    <div class="card">
+                        <h4 style="color: var(--primary);">App Side-Onboarding</h4>
+                        <p style="font-size: 0.9rem; color: var(--text-dim);">Tus operadores capturan los activos,
+                            nosotros los validamos. El cliente tiene el control desde el minuto uno.</p>
+                    </div>
+                </div>
+                <div style="display: grid; gap: 1rem;">
+                    <div class="card" style="border-left: 4px solid var(--primary);">
+                        <div style="font-size: 0.8rem; color: var(--text-dim);">ANTES</div>
+                        <div style="font-size: 1.25rem; font-weight: 700; color: var(--danger);">45+ Días</div>
+                        <div style="font-size: 0.8rem;">Proceso manual artesanal</div>
+                    </div>
+                    <div class="card"
+                        style="border-left: 4px solid var(--primary); background: rgba(16, 185, 129, 0.1);">
+                        <div style="font-size: 0.8rem; color: var(--primary);">AHORA (BAUM 2.0)</div>
+                        <div style="font-size: 2.5rem; font-weight: 800; color: var(--primary-light);">15 Días</div>
+                        <div style="font-size: 0.8rem;">Onboarding Digital Estructurado</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 7: CTA -->
+        <section class="slide">
+            <div class="bg-glow"></div>
+            <div class="container" style="text-align: center;">
+                <h1 class="hero-title">¿Listo para tener <span>Control Total?</span></h1>
+                <p class="subtitle" style="margin: 0 auto 3rem; font-size: 1.50rem;">Agenda una demo de 30 minutos y
+                    descubre por qué Baum es el estándar en gestión de riego.</p>
+
+                <div style="display: flex; justify-content: center; gap: 2rem;">
+                    <div class="card" style="min-width: 300px;">
+                        <p style="color: var(--text-dim); margin-bottom: 1rem;">Contacto Directo</p>
+                        <p style="font-size: 1.25rem; font-weight: 700;">b.sepulveda@baumsystem.com</p>
+                        <p style="color: var(--primary); font-weight: 600; margin-top: 1rem;">Berni Sepúlveda</p>
+                    </div>
+                </div>
+
+                <div style="margin-top: 4rem; opacity: 0.5; font-size: 0.75rem;">
+                    BAUMSYSTEM — CHILE | PERÚ | MÉXICO <br> © 2026 Todos los derechos reservados
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- Controls -->
+    <div class="nav-controls">
+        <button class="nav-btn" onclick="prevSlide()">←</button>
+        <div
+            style="display: flex; align-items: center; padding: 0 1rem; color: var(--text-dim); font-size: 0.8rem; font-weight: 600;">
+            <span id="currentSlideNum">1</span> / 7
+        </div>
+        <button class="nav-btn" onclick="nextSlide()">→</button>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const progressBar = document.getElementById('progressBar');
+        const currentSlideNum = document.getElementById('currentSlideNum');
+
+        function updateSlides() {
+            slides.forEach((slide, index) => {
+                slide.classList.toggle('active', index === currentSlide);
+            });
+            const progress = ((currentSlide + 1) / slides.length) * 100;
+            progressBar.style.width = progress + '%';
+            currentSlideNum.innerText = currentSlide + 1;
+        }
+
+        function nextSlide() {
+            if (currentSlide < slides.length - 1) {
+                currentSlide++;
+                updateSlides();
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlide > 0) {
+                currentSlide--;
+                updateSlides();
+            }
+        }
+
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'Enter') nextSlide();
+            if (e.key === 'ArrowLeft') prevSlide();
+        });
+
+        // Touch support
+        let touchstartX = 0;
+        let touchendX = 0;
+
+        window.addEventListener('touchstart', e => {
+            touchstartX = e.changedTouches[0].screenX;
+        });
+
+        window.addEventListener('touchend', e => {
+            touchendX = e.changedTouches[0].screenX;
+            if (touchendX < touchstartX - 50) nextSlide();
+            if (touchendX > touchstartX + 50) prevSlide();
+        });
+    </script>
+</body>
+
+</html>

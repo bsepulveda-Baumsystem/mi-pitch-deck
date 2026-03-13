@@ -1,0 +1,1062 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Baumsystem — Control Total de tu Riego</title>
+  <meta name="description" content="Baumsystem: la plataforma digital que transforma la gestión de sistemas de riego agrícola. Trazabilidad, mediciones, eventos y reportería en tiempo real." />
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Shared styles -->
+  <link rel="stylesheet" href="../../shared/css/base.css" />
+  <!-- Brand theme -->
+  <link rel="stylesheet" href="css/theme.css" />
+</head>
+<body>
+
+  <!-- Progress Bar -->
+  <div class="progress-bar" id="progressBar"></div>
+
+  <!-- Navigation -->
+  <nav class="site-nav" id="siteNav">
+    <a href="#hero" class="nav-logo">Baum<span>system</span></a>
+    <ul class="nav-links">
+      <li><a href="#problema">El Problema</a></li>
+      <li><a href="#solucion">Solución</a></li>
+      <li><a href="#modulos">Módulos</a></li>
+      <li><a href="#numeros">Números</a></li>
+      <li><a href="#contacto" class="nav-cta">Agendar Demo</a></li>
+    </ul>
+  </nav>
+
+  <!-- ============================================================
+       SECCIÓN 1 — HERO
+       ============================================================ -->
+  <section class="section section--light s-hero" id="hero">
+    <div class="section__inner s-hero__inner">
+
+      <div class="s-hero__content">
+        <div class="s-hero__eyebrow anim-fade-up">
+          <span class="tag tag--accent">
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor"><circle cx="5" cy="5" r="5"/></svg>
+            Plataforma SaaS Agrícola · Chile & México
+          </span>
+        </div>
+
+        <h1 class="s-hero__title text-display anim-fade-up">
+          Control total<br/>
+          <span class="s-hero__title-accent">de tu riego.</span>
+        </h1>
+
+        <p class="s-hero__subtitle anim-fade-up">
+          Baumsystem digitaliza la gestión de sistemas de riego agrícola:<br class="hide-mobile"/>
+          desde el levantamiento inicial hasta la reportería gerencial.
+        </p>
+
+        <div class="s-hero__actions anim-fade-up">
+          <a href="#contacto" class="btn btn--primary btn--lg">
+            Agendar Demo
+            <svg class="btn__arrow" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M3 8h10M9 4l4 4-4 4"/>
+            </svg>
+          </a>
+          <a href="#modulos" class="btn btn--ghost btn--lg">Ver la Plataforma</a>
+        </div>
+
+        <div class="s-hero__social-proof anim-fade-up">
+          <div class="s-hero__proof-item">
+            <span class="s-hero__proof-number">+10.000</span>
+            <span class="s-hero__proof-label">hectáreas gestionadas</span>
+          </div>
+          <div class="s-hero__proof-sep"></div>
+          <div class="s-hero__proof-item">
+            <span class="s-hero__proof-number">Chile · México</span>
+            <span class="s-hero__proof-label">presencia internacional</span>
+          </div>
+          <div class="s-hero__proof-sep"></div>
+          <div class="s-hero__proof-item">
+            <span class="s-hero__proof-number">Web + Móvil</span>
+            <span class="s-hero__proof-label">plataforma completa</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Phone Mockup -->
+      <div class="s-hero__visual anim-fade-right">
+        <div class="phone-mockup">
+          <div class="phone-mockup__notch"></div>
+          <div class="phone-mockup__screen">
+            <div class="ui-dashboard">
+              <div class="ui-header">
+                <span class="ui-header__title">Dashboard · Campo San José</span>
+                <div class="ui-header__dot"></div>
+              </div>
+              <div class="ui-kpi-row">
+                <div class="ui-kpi-item">
+                  <div class="ui-kpi-item__val" style="color:#22c55e">87%</div>
+                  <div class="ui-kpi-item__lbl">Cumplimiento</div>
+                </div>
+                <div class="ui-kpi-item">
+                  <div class="ui-kpi-item__val">142</div>
+                  <div class="ui-kpi-item__lbl">Mediciones</div>
+                </div>
+                <div class="ui-kpi-item">
+                  <div class="ui-kpi-item__val" style="color:#ef4444">3</div>
+                  <div class="ui-kpi-item__lbl">Fallas</div>
+                </div>
+              </div>
+              <div class="ui-chart-area">
+                <div class="ui-chart-label">Presiones por sector (bar)</div>
+                <div class="ui-chart-bars">
+                  <div class="ui-chart-bar" style="height:60%"></div>
+                  <div class="ui-chart-bar ui-chart-bar--active" style="height:85%"></div>
+                  <div class="ui-chart-bar ui-chart-bar--accent" style="height:70%"></div>
+                  <div class="ui-chart-bar" style="height:45%"></div>
+                  <div class="ui-chart-bar ui-chart-bar--active" style="height:90%"></div>
+                  <div class="ui-chart-bar" style="height:55%"></div>
+                  <div class="ui-chart-bar ui-chart-bar--accent" style="height:75%"></div>
+                </div>
+              </div>
+              <div class="ui-status-row">
+                <div class="ui-status-pill ui-status-pill--green">
+                  <div class="ui-status-pill__dot"></div>Sector A — Óptimo
+                </div>
+                <div class="ui-status-pill ui-status-pill--red">
+                  <div class="ui-status-pill__dot"></div>Filtro 2 — Falla
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Floating badges -->
+        <div class="s-hero__badge s-hero__badge--1">
+          <span class="s-hero__badge-icon">📍</span>
+          <div>
+            <strong>GPS en terreno</strong>
+            <span>Georreferencia exacta</span>
+          </div>
+        </div>
+        <div class="s-hero__badge s-hero__badge--2">
+          <span class="s-hero__badge-icon">🔴</span>
+          <div>
+            <strong>Falla detectada</strong>
+            <span>Filtro Sector B · Urgente</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Decorative background -->
+    <div class="s-hero__bg-decor" aria-hidden="true">
+      <div class="s-hero__bg-circle s-hero__bg-circle--1"></div>
+      <div class="s-hero__bg-circle s-hero__bg-circle--2"></div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SECCIÓN 2 — EL PROBLEMA
+       ============================================================ -->
+  <section class="section section--surface s-problem" id="problema">
+    <div class="section__inner">
+
+      <div class="section-header anim-fade-up">
+        <span class="text-label">El Problema</span>
+        <h2>Gestionar el riego hoy<br/>es difícil y riesgoso.</h2>
+        <p>La agricultura de precisión requiere datos en tiempo real. Sin una plataforma digital, el campo opera a ciegas.</p>
+      </div>
+
+      <div class="grid-3 s-problem__grid" data-stagger="0.12">
+        <!-- Problema 1 -->
+        <div class="s-problem__card">
+          <div class="s-problem__icon">
+            <svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+              <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+              <line x1="1" y1="1" x2="23" y2="23"/>
+            </svg>
+          </div>
+          <h3 class="s-problem__title">Riego a ciegas</h3>
+          <p class="s-problem__body">Sin datos en tiempo real, nadie sabe si el sistema funciona correctamente. Las fallas pasan desapercibidas hasta que el daño al cultivo ya es irreversible.</p>
+          <div class="s-problem__stat">
+            <span class="s-problem__stat-num">-30%</span>
+            <span class="s-problem__stat-lbl">pérdida de rendimiento por fallas no detectadas</span>
+          </div>
+        </div>
+
+        <!-- Problema 2 -->
+        <div class="s-problem__card s-problem__card--featured">
+          <div class="s-problem__icon">
+            <svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>
+              <line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/>
+              <line x1="9" y1="10" x2="12" y2="10"/>
+            </svg>
+          </div>
+          <h3 class="s-problem__title">Historial perdido</h3>
+          <p class="s-problem__body">El conocimiento vive en la cabeza del casetero o en cuadernos de papel. Cuando cambia el operador, se pierde el historial completo. Ningún activo tiene trazabilidad real.</p>
+          <div class="s-problem__stat">
+            <span class="s-problem__stat-num">0%</span>
+            <span class="s-problem__stat-lbl">de campos tienen trazabilidad digital de activos</span>
+          </div>
+        </div>
+
+        <!-- Problema 3 -->
+        <div class="s-problem__card">
+          <div class="s-problem__icon">
+            <svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+              <line x1="18" y1="20" x2="18" y2="10"/>
+              <line x1="12" y1="20" x2="12" y2="4"/>
+              <line x1="6"  y1="20" x2="6"  y2="14"/>
+            </svg>
+          </div>
+          <h3 class="s-problem__title">Decisiones sin datos</h3>
+          <p class="s-problem__body">Gerencia invierte en mantenimiento basándose en opiniones, no en métricas. No existe forma de saber si el equipo cumple el plan de mediciones ni qué activos son los más críticos.</p>
+          <div class="s-problem__stat">
+            <span class="s-problem__stat-num">Sin</span>
+            <span class="s-problem__stat-lbl">visibilidad del desempeño del equipo operacional</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SECCIÓN 3 — LA SOLUCIÓN (PINNED)
+       ============================================================ -->
+  <section class="section s-solution" id="solucion">
+    <div class="s-solution__sticky">
+      <div class="section__inner s-solution__inner">
+
+        <div class="s-solution__left">
+          <span class="text-label anim-fade-up">La Solución</span>
+          <h2 class="text-headline anim-fade-up" style="font-size:clamp(2rem,4vw,3.2rem); margin-bottom:1.5rem;">
+            Una plataforma que<br/>une el terreno con<br/><em style="color:var(--color-accent);font-style:normal;">la gerencia.</em>
+          </h2>
+          <p class="text-body-lg anim-fade-up">
+            Baumsystem es la plataforma SaaS que conecta el trabajo de campo con la toma de decisiones estratégica. App móvil para el casetero, dashboard web para el gerente.
+          </p>
+
+          <div class="s-solution__pillars anim-fade-up" data-stagger="0.1">
+            <div class="s-solution__pillar">
+              <div class="s-solution__pillar-dot"></div>
+              <div>
+                <strong>Levantamiento digital</strong>
+                <span>Inventario completo de activos con GPS y QR</span>
+              </div>
+            </div>
+            <div class="s-solution__pillar">
+              <div class="s-solution__pillar-dot"></div>
+              <div>
+                <strong>Mediciones con semáforo</strong>
+                <span>Presiones, caudales y aforos en tiempo real</span>
+              </div>
+            </div>
+            <div class="s-solution__pillar">
+              <div class="s-solution__pillar-dot"></div>
+              <div>
+                <strong>Gestión de eventos</strong>
+                <span>Fallas y mantenciones con historial completo</span>
+              </div>
+            </div>
+            <div class="s-solution__pillar">
+              <div class="s-solution__pillar-dot"></div>
+              <div>
+                <strong>Reportería automática</strong>
+                <span>PDF para gerencia generado en segundos</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="s-solution__right anim-fade-right">
+          <div class="laptop-mockup">
+            <div class="laptop-mockup__lid">
+              <div class="laptop-mockup__screen">
+                <!-- Laptop UI mockup -->
+                <div style="width:100%;height:100%;background:#0d2318;display:flex;flex-direction:column;overflow:hidden;">
+                  <!-- Top bar -->
+                  <div style="background:#1B4332;padding:8px 16px;display:flex;align-items:center;gap:8px;flex-shrink:0;">
+                    <div style="width:8px;height:8px;border-radius:50%;background:#52B788;"></div>
+                    <span style="color:#A7D5BC;font-size:10px;font-family:Inter,sans-serif;font-weight:600;">Baumsystem · Dashboard Gerencial</span>
+                  </div>
+                  <!-- Dashboard content -->
+                  <div style="padding:12px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;flex-shrink:0;">
+                    <div style="background:#1B4332;border-radius:8px;padding:10px;">
+                      <div style="font-size:16px;font-weight:800;color:#74C69D;font-family:Inter,sans-serif;">87%</div>
+                      <div style="font-size:7px;color:#A7D5BC;margin-top:2px;font-family:Inter,sans-serif;">Cumplimiento mediciones</div>
+                    </div>
+                    <div style="background:#1B4332;border-radius:8px;padding:10px;">
+                      <div style="font-size:16px;font-weight:800;color:#F9C74F;font-family:Inter,sans-serif;">3</div>
+                      <div style="font-size:7px;color:#A7D5BC;margin-top:2px;font-family:Inter,sans-serif;">Eventos por resolver</div>
+                    </div>
+                    <div style="background:#1B4332;border-radius:8px;padding:10px;">
+                      <div style="font-size:16px;font-weight:800;color:#52B788;font-family:Inter,sans-serif;">94</div>
+                      <div style="font-size:7px;color:#A7D5BC;margin-top:2px;font-family:Inter,sans-serif;">Health Score</div>
+                    </div>
+                  </div>
+                  <!-- Map placeholder -->
+                  <div style="margin:0 12px;border-radius:8px;background:#0F2D1E;flex:1;display:flex;align-items:center;justify-content:center;border:1px solid #1B4332;overflow:hidden;position:relative;">
+                    <!-- Grid lines to simulate map -->
+                    <svg width="100%" height="100%" style="position:absolute;top:0;left:0;opacity:0.3;" viewBox="0 0 300 150">
+                      <defs>
+                        <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+                          <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#52B788" stroke-width="0.5"/>
+                        </pattern>
+                      </defs>
+                      <rect width="100%" height="100%" fill="url(#grid)"/>
+                    </svg>
+                    <!-- Field shapes -->
+                    <svg width="70%" height="70%" viewBox="0 0 200 100" style="position:relative;z-index:1;">
+                      <polygon points="20,80 60,20 100,15 140,30 160,70 120,90 60,85" fill="rgba(82,183,136,0.3)" stroke="#52B788" stroke-width="1.5"/>
+                      <polygon points="160,70 200,50 210,80 175,95" fill="rgba(249,199,79,0.2)" stroke="#F9C74F" stroke-width="1.5"/>
+                      <circle cx="80" cy="55" r="5" fill="#52B788"/>
+                      <circle cx="120" cy="50" r="4" fill="#74C69D"/>
+                      <circle cx="150" cy="72" r="4" fill="#F9C74F"/>
+                    </svg>
+                    <div style="position:absolute;bottom:8px;right:8px;background:rgba(27,67,50,0.9);border-radius:4px;padding:4px 8px;">
+                      <span style="color:#A7D5BC;font-size:7px;font-family:Inter,sans-serif;">● Activos georreferenciados</span>
+                    </div>
+                  </div>
+                  <div style="padding:8px 12px;display:flex;gap:6px;flex-shrink:0;">
+                    <div style="background:#1B4332;border-radius:4px;padding:4px 8px;flex:1;font-size:7px;color:#A7D5BC;font-family:Inter,sans-serif;">Sector A · Verde ✓</div>
+                    <div style="background:#1B4332;border-radius:4px;padding:4px 8px;flex:1;font-size:7px;color:#F9C74F;font-family:Inter,sans-serif;">Sector B · Alerta ⚠</div>
+                    <div style="background:#1B4332;border-radius:4px;padding:4px 8px;flex:1;font-size:7px;color:#A7D5BC;font-family:Inter,sans-serif;">Sector C · Verde ✓</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="laptop-mockup__base"></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SECCIÓN 4 — MÓDULOS CON TABS (PINNED SCROLL)
+       ============================================================ -->
+  <section class="section s-modules" id="modulos">
+    <div class="section__inner">
+
+      <div class="section-header anim-fade-up">
+        <span class="text-label">La Plataforma</span>
+        <h2>Todo lo que necesitas,<br/>en un solo lugar.</h2>
+        <p>Cuatro módulos integrados que cubren el ciclo operacional completo del sistema de riego.</p>
+      </div>
+
+      <!-- Tab navigation -->
+      <div class="tab-nav" id="moduleTabNav" role="tablist">
+        <button class="tab-btn active" role="tab" data-tab="0">Levantamiento</button>
+        <button class="tab-btn" role="tab" data-tab="1">Mediciones</button>
+        <button class="tab-btn" role="tab" data-tab="2">Eventos & Fallas</button>
+        <button class="tab-btn" role="tab" data-tab="3">Visitas & Reportes</button>
+      </div>
+
+      <!-- Tab panels -->
+      <div class="s-modules__panels" id="modulePanels">
+
+        <!-- Panel 0: Levantamiento -->
+        <div class="s-modules__panel active" data-panel="0">
+          <div class="s-modules__panel-content">
+            <div class="s-modules__panel-text">
+              <span class="text-label">Módulo 01</span>
+              <h3 class="text-headline" style="font-size:2rem;margin:1rem 0;">Inventario digital<br/>desde el día 1</h3>
+              <p class="text-body-lg">Registra toda la infraestructura de riego del campo: casetas, equipos, sectores, bloques y válvulas. Con georreferencia GPS, fotos y especificaciones técnicas por cada activo.</p>
+
+              <ul class="feature-list" style="margin-top:1.5rem;" data-stagger="0.1">
+                <li class="feature-item">
+                  <div class="feature-item__icon">
+                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                  </div>
+                  <span class="feature-item__text"><strong>Árbol de activos automático:</strong> caseta → equipo → sector → bloque → válvula</span>
+                </li>
+                <li class="feature-item">
+                  <div class="feature-item__icon">
+                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                  </div>
+                  <span class="feature-item__text"><strong>Códigos QR por activo:</strong> escanea y mide al instante desde el celular</span>
+                </li>
+                <li class="feature-item">
+                  <div class="feature-item__icon">
+                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                  </div>
+                  <span class="feature-item__text"><strong>Georreferencia GPS:</strong> cada válvula y equipo en el mapa del campo</span>
+                </li>
+                <li class="feature-item">
+                  <div class="feature-item__icon">
+                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                  </div>
+                  <span class="feature-item__text"><strong>Catálogo de marcas y modelos:</strong> estandariza el inventario técnico</span>
+                </li>
+              </ul>
+
+              <div class="highlight-box" style="margin-top:2rem;">
+                "En 48–72 horas, el campo está 100% cargado en la plataforma. Listo para operar."
+              </div>
+            </div>
+            <div class="s-modules__panel-visual">
+              <!-- Levantamiento visual: phone with tree structure -->
+              <div class="phone-mockup" style="margin:0 auto;">
+                <div class="phone-mockup__notch"></div>
+                <div class="phone-mockup__screen" style="background:#f8faf7;">
+                  <div style="padding:32px 10px 10px;height:100%;display:flex;flex-direction:column;gap:6px;overflow:hidden;">
+                    <div style="font-size:9px;font-weight:800;color:#1B4332;font-family:Inter,sans-serif;padding:0 2px;">Campo: San José Puangue</div>
+                    <!-- Tree items -->
+                    <div style="background:white;border-radius:8px;padding:8px;border:1px solid #D8F3DC;">
+                      <div style="font-size:8px;color:#1B4332;font-weight:700;font-family:Inter,sans-serif;">🏠 Caseta 1</div>
+                      <div style="margin-left:10px;margin-top:4px;">
+                        <div style="font-size:7px;color:#4A5568;font-family:Inter,sans-serif;padding:3px 0;border-left:2px solid #D8F3DC;padding-left:6px;">⚙ Equipo de Riego 1</div>
+                        <div style="margin-left:10px;">
+                          <div style="font-size:6px;color:#4A5568;font-family:Inter,sans-serif;padding:2px 0;border-left:2px solid #D8F3DC;padding-left:6px;">🔵 Sector A · Arándanos · 12 ha</div>
+                          <div style="font-size:6px;color:#4A5568;font-family:Inter,sans-serif;padding:2px 0;border-left:2px solid #D8F3DC;padding-left:6px;">🔵 Sector B · Arándanos · 8 ha</div>
+                        </div>
+                      </div>
+                    </div>
+                    <div style="background:white;border-radius:8px;padding:8px;border:1px solid #D8F3DC;">
+                      <div style="font-size:8px;color:#1B4332;font-weight:700;font-family:Inter,sans-serif;">🏠 Caseta 2</div>
+                      <div style="margin-left:10px;margin-top:4px;">
+                        <div style="font-size:7px;color:#4A5568;font-family:Inter,sans-serif;padding:3px 0;border-left:2px solid #D8F3DC;padding-left:6px;">⚙ Equipo de Riego 2</div>
+                      </div>
+                    </div>
+                    <!-- Activos -->
+                    <div style="background:#1B4332;border-radius:8px;padding:8px;">
+                      <div style="font-size:7px;color:#A7D5BC;font-weight:600;font-family:Inter,sans-serif;margin-bottom:4px;">ACTIVOS LEVANTADOS</div>
+                      <div style="display:flex;gap:6px;">
+                        <div style="background:rgba(255,255,255,0.1);border-radius:4px;padding:4px 6px;font-size:6px;color:white;font-family:Inter,sans-serif;">💧 12 Válvulas</div>
+                        <div style="background:rgba(255,255,255,0.1);border-radius:4px;padding:4px 6px;font-size:6px;color:white;font-family:Inter,sans-serif;">⚙ 3 Bombas</div>
+                        <div style="background:rgba(255,255,255,0.1);border-radius:4px;padding:4px 6px;font-size:6px;color:white;font-family:Inter,sans-serif;">🔧 4 Filtros</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Panel 1: Mediciones -->
+        <div class="s-modules__panel" data-panel="1">
+          <div class="s-modules__panel-content">
+            <div class="s-modules__panel-text">
+              <span class="text-label">Módulo 02</span>
+              <h3 class="text-headline" style="font-size:2rem;margin:1rem 0;">Datos en tiempo real<br/>con semáforo de salud</h3>
+              <p class="text-body-lg">Registra presiones, caudales y aforos desde la app móvil. Cada medición se valida automáticamente contra los rangos óptimos del diseño del sistema.</p>
+
+              <ul class="feature-list" style="margin-top:1.5rem;" data-stagger="0.1">
+                <li class="feature-item">
+                  <div class="feature-item__icon">
+                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                  </div>
+                  <span class="feature-item__text"><strong>Semáforo automático:</strong> 🟢 óptimo · 🟡 advertencia · 🔴 crítico</span>
+                </li>
+                <li class="feature-item">
+                  <div class="feature-item__icon">
+                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                  </div>
+                  <span class="feature-item__text"><strong>Modo offline:</strong> mide sin internet, sincroniza al volver a la red</span>
+                </li>
+                <li class="feature-item">
+                  <div class="feature-item__icon">
+                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                  </div>
+                  <span class="feature-item__text"><strong>Cronómetro integrado:</strong> aforos con temporización exacta de 36 segundos</span>
+                </li>
+                <li class="feature-item">
+                  <div class="feature-item__icon">
+                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                  </div>
+                  <span class="feature-item__text"><strong>Dashboard gerencial:</strong> % cumplimiento del plan de mediciones por campo</span>
+                </li>
+              </ul>
+
+              <div class="s-modules__semaphore-demo" style="margin-top:2rem;">
+                <div class="s-modules__semaphore-title">Estado del riego hoy</div>
+                <div class="s-modules__semaphore-items">
+                  <div class="s-modules__semaphore-item">
+                    <div class="semaphore__dot semaphore__dot--green"></div>
+                    <span>Sector A — Presión 2.1 bar (óptimo: 2.0)</span>
+                  </div>
+                  <div class="s-modules__semaphore-item">
+                    <div class="semaphore__dot semaphore__dot--orange"></div>
+                    <span>Sector B — Presión 1.6 bar (mín: 1.8)</span>
+                  </div>
+                  <div class="s-modules__semaphore-item">
+                    <div class="semaphore__dot semaphore__dot--red"></div>
+                    <span>Filtro 2 — Diferencial alto · Falla activa</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="s-modules__panel-visual">
+              <div class="phone-mockup" style="margin:0 auto;">
+                <div class="phone-mockup__notch"></div>
+                <div class="phone-mockup__screen" style="background:#f8faf7;">
+                  <div style="padding:32px 10px 10px;height:100%;display:flex;flex-direction:column;gap:6px;overflow:hidden;">
+                    <div style="font-size:9px;font-weight:800;color:#1B4332;font-family:Inter,sans-serif;">Mediciones · Hoy</div>
+                    <!-- Measurement items -->
+                    <div style="background:white;border-radius:8px;border:2px solid #22c55e;padding:8px;display:flex;justify-content:space-between;align-items:center;">
+                      <div>
+                        <div style="font-size:7px;color:#4A5568;font-family:Inter,sans-serif;">Válvula A-01</div>
+                        <div style="font-size:10px;font-weight:800;color:#1B4332;font-family:Inter,sans-serif;">2.1 bar</div>
+                      </div>
+                      <div style="width:20px;height:20px;border-radius:50%;background:#22c55e;box-shadow:0 0 8px #22c55e;"></div>
+                    </div>
+                    <div style="background:white;border-radius:8px;border:2px solid #f59e0b;padding:8px;display:flex;justify-content:space-between;align-items:center;">
+                      <div>
+                        <div style="font-size:7px;color:#4A5568;font-family:Inter,sans-serif;">Válvula B-03</div>
+                        <div style="font-size:10px;font-weight:800;color:#1B4332;font-family:Inter,sans-serif;">1.6 bar</div>
+                      </div>
+                      <div style="width:20px;height:20px;border-radius:50%;background:#f59e0b;box-shadow:0 0 8px #f59e0b;"></div>
+                    </div>
+                    <div style="background:white;border-radius:8px;border:2px solid #ef4444;padding:8px;display:flex;justify-content:space-between;align-items:center;">
+                      <div>
+                        <div style="font-size:7px;color:#4A5568;font-family:Inter,sans-serif;">Filtro · Sector B</div>
+                        <div style="font-size:10px;font-weight:800;color:#ef4444;font-family:Inter,sans-serif;">⚠ Falla</div>
+                      </div>
+                      <div style="width:20px;height:20px;border-radius:50%;background:#ef4444;box-shadow:0 0 8px #ef4444;"></div>
+                    </div>
+                    <!-- Progress -->
+                    <div style="background:#1B4332;border-radius:8px;padding:8px;">
+                      <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
+                        <span style="font-size:7px;color:#A7D5BC;font-family:Inter,sans-serif;">Cumplimiento del plan</span>
+                        <span style="font-size:7px;color:#74C69D;font-weight:700;font-family:Inter,sans-serif;">87%</span>
+                      </div>
+                      <div style="background:rgba(255,255,255,0.1);border-radius:3px;height:4px;">
+                        <div style="width:87%;height:100%;background:#52B788;border-radius:3px;"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Panel 2: Eventos & Fallas -->
+        <div class="s-modules__panel" data-panel="2">
+          <div class="s-modules__panel-content">
+            <div class="s-modules__panel-text">
+              <span class="text-label">Módulo 03</span>
+              <h3 class="text-headline" style="font-size:2rem;margin:1rem 0;">De la falla detectada<br/>a la solución registrada</h3>
+              <p class="text-body-lg">Registra fallas, mantenciones y observaciones sobre cada activo. Sigue el estado, asigna responsables y lleva el historial completo de intervenciones.</p>
+
+              <ul class="feature-list" style="margin-top:1.5rem;" data-stagger="0.1">
+                <li class="feature-item">
+                  <div class="feature-item__icon">
+                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                  </div>
+                  <span class="feature-item__text"><strong>3 niveles de prioridad:</strong> Urgente (sin riego) · Media · Baja</span>
+                </li>
+                <li class="feature-item">
+                  <div class="feature-item__icon">
+                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                  </div>
+                  <span class="feature-item__text"><strong>Categorización automática:</strong> hidráulica · eléctrica · telemetría</span>
+                </li>
+                <li class="feature-item">
+                  <div class="feature-item__icon">
+                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                  </div>
+                  <span class="feature-item__text"><strong>Dashboard de resolución:</strong> tiempo promedio por prioridad, backlog</span>
+                </li>
+                <li class="feature-item">
+                  <div class="feature-item__icon">
+                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                  </div>
+                  <span class="feature-item__text"><strong>Historial del activo:</strong> todos los eventos vinculados al componente</span>
+                </li>
+              </ul>
+
+              <div class="highlight-box" style="margin-top:2rem;">
+                "Si una falla eléctrica se repite 5 veces en un mes, ya no es una falla: es una señal de inversión."
+              </div>
+            </div>
+            <div class="s-modules__panel-visual">
+              <div class="phone-mockup" style="margin:0 auto;">
+                <div class="phone-mockup__notch"></div>
+                <div class="phone-mockup__screen" style="background:#f8faf7;">
+                  <div style="padding:32px 10px 10px;height:100%;display:flex;flex-direction:column;gap:6px;overflow:hidden;">
+                    <div style="font-size:9px;font-weight:800;color:#1B4332;font-family:Inter,sans-serif;">Eventos · Pendientes</div>
+                    <div style="background:white;border-radius:8px;border-left:3px solid #ef4444;padding:8px;">
+                      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:4px;">
+                        <div>
+                          <div style="font-size:7px;color:#ef4444;font-weight:700;font-family:Inter,sans-serif;">URGENTE · Falla hidráulica</div>
+                          <div style="font-size:8px;color:#1B4332;font-weight:600;font-family:Inter,sans-serif;">Bomba de riego #2</div>
+                          <div style="font-size:6px;color:#8A9BA8;font-family:Inter,sans-serif;">Abierto hace 2 horas</div>
+                        </div>
+                        <div style="font-size:6px;background:#FFE4E4;color:#D00;border-radius:4px;padding:2px 4px;white-space:nowrap;font-family:Inter,sans-serif;">Sin riego</div>
+                      </div>
+                    </div>
+                    <div style="background:white;border-radius:8px;border-left:3px solid #f59e0b;padding:8px;">
+                      <div>
+                        <div style="font-size:7px;color:#f59e0b;font-weight:700;font-family:Inter,sans-serif;">MEDIA · Filtro sucio</div>
+                        <div style="font-size:8px;color:#1B4332;font-weight:600;font-family:Inter,sans-serif;">Filtro de arena · Caseta 1</div>
+                        <div style="font-size:6px;color:#8A9BA8;font-family:Inter,sans-serif;">Abierto hace 3 días</div>
+                      </div>
+                    </div>
+                    <div style="background:white;border-radius:8px;border-left:3px solid #22c55e;padding:8px;">
+                      <div>
+                        <div style="font-size:7px;color:#22c55e;font-weight:700;font-family:Inter,sans-serif;">BAJA · Mantención</div>
+                        <div style="font-size:8px;color:#1B4332;font-weight:600;font-family:Inter,sans-serif;">Revisión programada · Motor</div>
+                        <div style="font-size:6px;color:#8A9BA8;font-family:Inter,sans-serif;">Próximo: 20 marzo</div>
+                      </div>
+                    </div>
+                    <div style="background:#1B4332;border-radius:8px;padding:8px;display:flex;justify-content:space-around;">
+                      <div style="text-align:center;">
+                        <div style="font-size:14px;font-weight:800;color:#ef4444;font-family:Inter,sans-serif;">1</div>
+                        <div style="font-size:6px;color:#A7D5BC;font-family:Inter,sans-serif;">Urgente</div>
+                      </div>
+                      <div style="text-align:center;">
+                        <div style="font-size:14px;font-weight:800;color:#f59e0b;font-family:Inter,sans-serif;">1</div>
+                        <div style="font-size:6px;color:#A7D5BC;font-family:Inter,sans-serif;">Media</div>
+                      </div>
+                      <div style="text-align:center;">
+                        <div style="font-size:14px;font-weight:800;color:#22c55e;font-family:Inter,sans-serif;">1</div>
+                        <div style="font-size:6px;color:#A7D5BC;font-family:Inter,sans-serif;">Baja</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Panel 3: Visitas & Reportes -->
+        <div class="s-modules__panel" data-panel="3">
+          <div class="s-modules__panel-content">
+            <div class="s-modules__panel-text">
+              <span class="text-label">Módulo 04</span>
+              <h3 class="text-headline" style="font-size:2rem;margin:1rem 0;">Reportes automáticos<br/>para la gerencia</h3>
+              <p class="text-body-lg">Los supervisores Baumsystem documentan cada visita con observaciones y tareas. El PDF llega automáticamente a la bandeja de entrada del gerente.</p>
+
+              <ul class="feature-list" style="margin-top:1.5rem;" data-stagger="0.1">
+                <li class="feature-item">
+                  <div class="feature-item__icon">
+                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                  </div>
+                  <span class="feature-item__text"><strong>Reporte estructurado:</strong> observaciones, propuestas y tareas con responsable</span>
+                </li>
+                <li class="feature-item">
+                  <div class="feature-item__icon">
+                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                  </div>
+                  <span class="feature-item__text"><strong>PDF automático:</strong> se genera en segundos y se envía por email</span>
+                </li>
+                <li class="feature-item">
+                  <div class="feature-item__icon">
+                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                  </div>
+                  <span class="feature-item__text"><strong>Calendario integrado:</strong> las tareas se sincronizan automáticamente</span>
+                </li>
+                <li class="feature-item">
+                  <div class="feature-item__icon">
+                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                  </div>
+                  <span class="feature-item__text"><strong>Health Score gerencial:</strong> cumplimiento, backlog, tendencias por campo</span>
+                </li>
+              </ul>
+            </div>
+            <div class="s-modules__panel-visual">
+              <div class="s-modules__report-preview">
+                <div class="s-modules__report-header">
+                  <div>
+                    <div style="font-size:10px;font-weight:800;color:#1B4332;font-family:Inter,sans-serif;">REPORTE DE VISITA</div>
+                    <div style="font-size:7px;color:#8A9BA8;font-family:Inter,sans-serif;">Baumsystem · 12 marzo 2026</div>
+                  </div>
+                  <div style="background:#1B4332;border-radius:4px;padding:4px 8px;font-size:7px;color:white;font-family:Inter,sans-serif;">PDF ↓</div>
+                </div>
+                <div style="padding:8px 0;border-bottom:1px solid #D8F3DC;">
+                  <div style="font-size:7px;font-weight:700;color:#52B788;font-family:Inter,sans-serif;letter-spacing:0.05em;margin-bottom:4px;">OBSERVACIONES</div>
+                  <div style="font-size:7px;color:#4A5568;font-family:Inter,sans-serif;line-height:1.5;">• Presión baja en Sector B. Revisar filtro de arena Caseta 1 con prioridad media.</div>
+                </div>
+                <div style="padding:8px 0;border-bottom:1px solid #D8F3DC;">
+                  <div style="font-size:7px;font-weight:700;color:#52B788;font-family:Inter,sans-serif;letter-spacing:0.05em;margin-bottom:4px;">TAREAS ASIGNADAS</div>
+                  <div style="font-size:7px;color:#4A5568;font-family:Inter,sans-serif;line-height:1.5;">
+                    <div style="display:flex;justify-content:space-between;"><span>Limpieza filtro Caseta 1</span><span style="color:#ef4444;">20/03</span></div>
+                    <div style="display:flex;justify-content:space-between;"><span>Aforo Sector A completo</span><span style="color:#f59e0b;">25/03</span></div>
+                  </div>
+                </div>
+                <div style="padding:8px 0;">
+                  <div style="font-size:7px;font-weight:700;color:#52B788;font-family:Inter,sans-serif;letter-spacing:0.05em;margin-bottom:4px;">HEALTH SCORE</div>
+                  <div style="display:flex;align-items:center;gap:8px;">
+                    <div style="font-size:24px;font-weight:800;color:#1B4332;font-family:Inter,sans-serif;">94</div>
+                    <div>
+                      <div style="font-size:6px;color:#4A5568;font-family:Inter,sans-serif;">Operación estable</div>
+                      <div style="width:80px;background:#D8F3DC;border-radius:3px;height:4px;margin-top:3px;">
+                        <div style="width:94%;height:100%;background:#1B4332;border-radius:3px;"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /module panels -->
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SECCIÓN 5 — NÚMEROS / KPIs
+       ============================================================ -->
+  <section class="section section--dark s-kpis" id="numeros">
+    <div class="section__inner">
+
+      <div class="section-header anim-fade-up">
+        <span class="text-label" style="color:var(--color-accent-light);">En Números</span>
+        <h2 style="color:white;">Resultados que hablan<br/>por sí solos.</h2>
+        <p style="color:rgba(232,245,233,0.7);">Baumsystem gestiona campos en Chile y México. La plataforma crece junto con sus clientes.</p>
+      </div>
+
+      <div class="grid-4 s-kpis__grid" data-stagger="0.1">
+        <div class="s-kpis__card kpi-card" style="background:rgba(255,255,255,0.05);border-color:rgba(255,255,255,0.1);">
+          <div class="kpi-card__number" style="color:var(--color-accent-light);">
+            <span data-counter="10000" data-suffix="+" data-duration="2">0+</span>
+          </div>
+          <div class="kpi-card__label" style="color:rgba(232,245,233,0.7);">Hectáreas bajo servicio</div>
+        </div>
+        <div class="s-kpis__card kpi-card" style="background:rgba(255,255,255,0.05);border-color:rgba(255,255,255,0.1);">
+          <div class="kpi-card__number" style="color:var(--color-accent-light);">
+            <span data-counter="2" data-suffix="" data-duration="1">0</span>
+          </div>
+          <div class="kpi-card__label" style="color:rgba(232,245,233,0.7);">Países (Chile y México)</div>
+        </div>
+        <div class="s-kpis__card kpi-card" style="background:rgba(255,255,255,0.05);border-color:rgba(255,255,255,0.1);">
+          <div class="kpi-card__number" style="color:var(--color-accent-light);">
+            <span data-counter="3834" data-suffix="+" data-duration="2.5">0+</span>
+          </div>
+          <div class="kpi-card__label" style="color:rgba(232,245,233,0.7);">Ha en pipeline internacional</div>
+        </div>
+        <div class="s-kpis__card kpi-card" style="background:rgba(255,255,255,0.05);border-color:rgba(255,255,255,0.1);">
+          <div class="kpi-card__number" style="color:var(--color-accent-light);">
+            <span data-counter="48" data-suffix="h" data-duration="1.5">0h</span>
+          </div>
+          <div class="kpi-card__label" style="color:rgba(232,245,233,0.7);">Tiempo para campo operativo</div>
+        </div>
+      </div>
+
+      <!-- International expansion -->
+      <div class="s-kpis__expansion anim-fade-up">
+        <div class="s-kpis__expansion-title">Expansión Internacional en Curso</div>
+        <div class="s-kpis__expansion-grid" data-stagger="0.08">
+          <div class="s-kpis__prospect">
+            <div class="s-kpis__prospect-flag">🇵🇪</div>
+            <div class="s-kpis__prospect-info">
+              <strong>Agroberries Perú</strong>
+              <span>800 ha · Proyección 1.300 ha</span>
+            </div>
+          </div>
+          <div class="s-kpis__prospect">
+            <div class="s-kpis__prospect-flag">🇵🇪</div>
+            <div class="s-kpis__prospect-info">
+              <strong>Agroblue</strong>
+              <span>230 ha</span>
+            </div>
+          </div>
+          <div class="s-kpis__prospect">
+            <div class="s-kpis__prospect-flag">🇵🇪</div>
+            <div class="s-kpis__prospect-info">
+              <strong>Agrícola Bluegold</strong>
+              <span>400 ha</span>
+            </div>
+          </div>
+          <div class="s-kpis__prospect">
+            <div class="s-kpis__prospect-flag">🇲🇽</div>
+            <div class="s-kpis__prospect-info">
+              <strong>Agrícola Bafar</strong>
+              <span>1.904 ha en evaluación</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SECCIÓN 6 — CÓMO FUNCIONA
+       ============================================================ -->
+  <section class="section section--accent s-process" id="proceso">
+    <div class="section__inner">
+
+      <div class="section-header anim-fade-up">
+        <span class="text-label">Implementación</span>
+        <h2>Operativo en 4 pasos.<br/>Sin complicaciones.</h2>
+        <p>Baumsystem acompaña cada etapa del proceso. Desde el primer levantamiento hasta la primera medición.</p>
+      </div>
+
+      <div class="s-process__steps" data-stagger="0.15">
+        <div class="s-process__step">
+          <div class="s-process__step-num">01</div>
+          <div class="s-process__step-connector"></div>
+          <div class="s-process__step-content">
+            <span class="s-process__step-duration">1–3 días</span>
+            <h3>Levantamiento Inicial</h3>
+            <p>Nuestro equipo visita el campo y registra toda la infraestructura en la plataforma: casetas, bombas, filtros, válvulas y bloques. En 48–72h el campo está 100% cargado.</p>
+          </div>
+        </div>
+
+        <div class="s-process__step">
+          <div class="s-process__step-num">02</div>
+          <div class="s-process__step-connector"></div>
+          <div class="s-process__step-content">
+            <span class="s-process__step-duration">1 día</span>
+            <h3>Capacitación</h3>
+            <p>Entrenamos a caseteros y administradores. Interfaz guiada y simple — el operador hace su primera medición el mismo día de la capacitación.</p>
+          </div>
+        </div>
+
+        <div class="s-process__step">
+          <div class="s-process__step-num">03</div>
+          <div class="s-process__step-connector"></div>
+          <div class="s-process__step-content">
+            <span class="s-process__step-duration">Continuo</span>
+            <h3>Operación en Tiempo Real</h3>
+            <p>Desde el primer día los caseteros registran mediciones y eventos. El dashboard se actualiza en tiempo real. Supervisores Baumsystem realizan visitas periódicas.</p>
+          </div>
+        </div>
+
+        <div class="s-process__step">
+          <div class="s-process__step-num">04</div>
+          <div class="s-process__step-content">
+            <span class="s-process__step-duration">Continuo</span>
+            <h3>Análisis & Decisión</h3>
+            <p>Gerencia accede a reportes automáticos con Health Score, ranking de activos problemáticos y proyecciones. Las decisiones se basan en datos.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SECCIÓN 7 — BENEFICIOS
+       ============================================================ -->
+  <section class="section section--surface s-benefits" id="beneficios">
+    <div class="section__inner">
+
+      <div class="section-header anim-fade-up">
+        <span class="text-label">Beneficios</span>
+        <h2>Lo que Baumsystem<br/>le entrega a tu campo.</h2>
+        <p>No es solo software. Es el sistema operativo de tu campo de riego.</p>
+      </div>
+
+      <div class="grid-3 s-benefits__grid" data-stagger="0.1">
+        <!-- Benefit 1 -->
+        <div class="card s-benefits__card">
+          <div class="card__icon">
+            <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+              <rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>
+            </svg>
+          </div>
+          <h3 class="card__title">Visibilidad 100% del riego</h3>
+          <p class="card__body">Sabe exactamente qué pasa en cada válvula, bomba y filtro de tu campo. En tiempo real, desde tu celular o computador, en cualquier momento.</p>
+        </div>
+
+        <!-- Benefit 2 -->
+        <div class="card s-benefits__card">
+          <div class="card__icon">
+            <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+              <polyline points="9 12 11 14 15 10"/>
+            </svg>
+          </div>
+          <h3 class="card__title">Cero fallas invisibles</h3>
+          <p class="card__body">El sistema detecta desviaciones antes de que causen daño al cultivo. Reduce el tiempo de respuesta ante fallas críticas de días a horas.</p>
+        </div>
+
+        <!-- Benefit 3 -->
+        <div class="card s-benefits__card">
+          <div class="card__icon">
+            <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+              <ellipse cx="12" cy="5" rx="9" ry="3"/>
+              <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/>
+              <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/>
+            </svg>
+          </div>
+          <h3 class="card__title">Historial indestructible</h3>
+          <p class="card__body">Todo queda registrado: quién midió, cuándo, qué valor. Aunque cambie el operador, el historial del activo permanece intacto en la nube.</p>
+        </div>
+
+        <!-- Benefit 4 -->
+        <div class="card s-benefits__card">
+          <div class="card__icon">
+            <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+              <path d="M12 2a7 7 0 1 0 0 14A7 7 0 0 0 12 2z"/>
+              <path d="M12 8v4l3 3"/>
+              <path d="M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M2 12h2M20 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+            </svg>
+          </div>
+          <h3 class="card__title">Uniformidad del riego</h3>
+          <p class="card__body">Con datos de presión y caudal por bloque, identifica sectores que riegan de más o de menos. Protege tu cultivo y reduce el consumo de agua.</p>
+        </div>
+
+        <!-- Benefit 5 -->
+        <div class="card s-benefits__card">
+          <div class="card__icon">
+            <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+              <polyline points="14 2 14 8 20 8"/>
+              <line x1="16" y1="13" x2="8" y2="13"/>
+              <line x1="16" y1="17" x2="8" y2="17"/>
+              <polyline points="10 9 9 9 8 9"/>
+            </svg>
+          </div>
+          <h3 class="card__title">Reportes sin esfuerzo</h3>
+          <p class="card__body">El gerente recibe un resumen ejecutivo automático. Sin esperar que alguien prepare el informe. La plataforma lo genera y lo envía sola.</p>
+        </div>
+
+        <!-- Benefit 6 -->
+        <div class="card s-benefits__card">
+          <div class="card__icon">
+            <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+              <circle cx="9" cy="7" r="4"/>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
+          </div>
+          <h3 class="card__title">Equipo Baumsystem en terreno</h3>
+          <p class="card__body">No es solo software — tienes agrónomos expertos que conocen tu campo, lo visitan periódicamente y te acompañan en toda la operación.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SECCIÓN 8 — GRÁFICO DE CRECIMIENTO
+       ============================================================ -->
+  <section class="section section--light s-growth" id="crecimiento">
+    <div class="section__inner">
+
+      <div class="s-growth__layout">
+        <div class="s-growth__text anim-fade-left">
+          <span class="text-label">Crecimiento</span>
+          <h2 class="text-headline" style="font-size:clamp(2rem,4vw,3rem);margin:1rem 0 1.5rem;">
+            De 1.200 a +10.000<br/>hectáreas en 4 años.
+          </h2>
+          <p class="text-body-lg">Baumsystem creció de manera orgánica, cliente a cliente, campo a campo. La confianza se construye en terreno, los resultados se ven en los datos.</p>
+
+          <div class="s-growth__milestones" data-stagger="0.1">
+            <div class="s-growth__milestone">
+              <span class="s-growth__milestone-year">2022</span>
+              <span class="s-growth__milestone-desc">Primera expansión fuera de la región de origen</span>
+            </div>
+            <div class="s-growth__milestone">
+              <span class="s-growth__milestone-year">2024</span>
+              <span class="s-growth__milestone-desc">Expansión a México · Primer cliente internacional</span>
+            </div>
+            <div class="s-growth__milestone">
+              <span class="s-growth__milestone-year">2025</span>
+              <span class="s-growth__milestone-desc">Superación de 10.000 hectáreas bajo servicio</span>
+            </div>
+            <div class="s-growth__milestone">
+              <span class="s-growth__milestone-year">2026</span>
+              <span class="s-growth__milestone-desc">Pipeline de +3.800 ha en Perú y México</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="s-growth__chart-wrap anim-fade-right">
+          <canvas id="growthChart" width="500" height="340"></canvas>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SECCIÓN 9 — CIERRE / CTA (PINNED)
+       ============================================================ -->
+  <section class="section section--dark s-cta" id="contacto">
+    <div class="section__inner s-cta__inner">
+
+      <div class="s-cta__logo anim-scale-in">
+        <span class="s-cta__logo-text">Baum<span>system</span></span>
+      </div>
+
+      <h2 class="s-cta__title anim-fade-up">
+        ¿Listo para tener control<br/>total de tu riego?
+      </h2>
+
+      <p class="s-cta__subtitle anim-fade-up">
+        Agenda una demo con nuestro equipo. En 30 minutos te mostramos<br class="hide-mobile"/>
+        cómo Baumsystem transforma la operación de tu campo.
+      </p>
+
+      <div class="s-cta__actions anim-fade-up">
+        <a href="mailto:b.sepulveda@baumsystem.com?subject=Solicitud%20de%20Demo%20Baumsystem" class="btn btn--primary btn--lg s-cta__btn-primary">
+          Agendar Demo Gratuita
+          <svg class="btn__arrow" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 8h10M9 4l4 4-4 4"/>
+          </svg>
+        </a>
+        <a href="mailto:b.sepulveda@baumsystem.com" class="btn btn--ghost btn--lg s-cta__btn-secondary">
+          b.sepulveda@baumsystem.com
+        </a>
+      </div>
+
+      <div class="s-cta__proof anim-fade-up">
+        <div class="s-cta__proof-item">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+          Sin compromiso
+        </div>
+        <div class="s-cta__proof-item">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+          Demo personalizada para tu campo
+        </div>
+        <div class="s-cta__proof-item">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+          Respuesta en 24 horas
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Decorative circles -->
+    <div class="s-cta__decor" aria-hidden="true">
+      <div class="s-cta__decor-circle s-cta__decor-circle--1"></div>
+      <div class="s-cta__decor-circle s-cta__decor-circle--2"></div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="site-footer__inner">
+      <div class="site-footer__brand">
+        <span class="nav-logo">Baum<span>system</span></span>
+        <p>Control Total de tu Riego</p>
+      </div>
+      <div class="site-footer__copy">
+        © 2026 Baumsystem. Chile · México.
+      </div>
+    </div>
+  </footer>
+
+  <!-- GSAP + ScrollTrigger CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <!-- Chart.js CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+  <!-- Shared core -->
+  <script src="../../shared/js/core.js"></script>
+  <!-- Brand-specific logic -->
+  <script src="js/main.js"></script>
+</body>
+</html>
