@@ -1,423 +1,206 @@
-/* =============================================
-   CORE.JS — Baumsystem Pitch Deck System
-   Shared utilities: counters, video autoplay,
-   progress bar, nav scroll, chart helpers
-   ============================================= */
+/* ============================================================
+   CORE.JS — Funciones compartidas del sistema de presentación
+   Baumsystem Pitch Deck System
+   ============================================================ */
 
 'use strict';
 
-/* ---- 1. Progress Bar ---- */
-const ProgressBar = {
-  init() {
-    const bar = document.querySelector('.progress-bar');
-    if (!bar) return;
+/* ---- Barra de progreso de scroll -------------------------- */
+function initProgressBar() {
+  const bar = document.getElementById('progressBar');
+  if (!bar) return;
 
-    const update = () => {
-      const scrollTop = window.scrollY || window.pageYOffset;
-      const docH = document.documentElement.scrollHeight - window.innerHeight;
-      const pct = docH > 0 ? (scrollTop / docH) * 100 : 0;
-      bar.style.width = pct + '%';
-    };
+  window.addEventListener('scroll', () => {
+    const scrollTop  = window.scrollY;
+    const docHeight  = document.documentElement.scrollHeight - window.innerHeight;
+    const progress   = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+    bar.style.width  = Math.min(progress, 100) + '%';
+  }, { passive: true });
+}
 
-    window.addEventListener('scroll', update, { passive: true });
-    update();
-  }
-};
-
-/* ---- 2. Nav Scroll Behaviour ---- */
-const NavScroll = {
-  init() {
-    const nav = document.querySelector('.site-nav');
-    if (!nav) return;
-
-    const onScroll = () => {
-      if (window.scrollY > 60) {
-        nav.classList.add('scrolled');
-      } else {
-        nav.classList.remove('scrolled');
-      }
-    };
-
-    window.addEventListener('scroll', onScroll, { passive: true });
-    onScroll();
-  }
-};
-
-/* ---- 3. Animated Counter ---- */
-const CounterAnimation = {
-  /**
-   * Animate a numeric counter using GSAP.
-   * @param {HTMLElement} el - The target element.
-   * @param {number} target - The final value.
-   * @param {string} suffix - E.g. '+', '%', 'K'.
-   * @param {number} duration - Animation duration in seconds.
-   */
-  animate(el, target, suffix = '', duration = 2) {
-    if (!el || typeof gsap === 'undefined') return;
-
+/* ---- Contador animado ------------------------------------- */
+/**
+ * Anima un elemento de 0 a `target` usando GSAP si está disponible,
+ * o un fallback con requestAnimationFrame.
+ *
+ * @param {HTMLElement} el       - Elemento que contiene el counter
+ * @param {number}      target   - Valor final
+ * @param {number}      duration - Duración en segundos (default 2)
+ * @param {string}      suffix   - Sufijo a agregar ('+', '%', etc.)
+ * @param {boolean}     isFloat  - Si true, muestra decimales
+ */
+function animateCounter(el, target, duration = 2, suffix = '', isFloat = false) {
+  if (typeof gsap !== 'undefined') {
     const obj = { val: 0 };
     gsap.to(obj, {
       val: target,
       duration,
       ease: 'power2.out',
-      snap: { val: 1 },
-      onUpdate() {
-        el.textContent = Math.round(obj.val).toLocaleString('es-CL') + suffix;
-      },
-      onComplete() {
-        el.textContent = target.toLocaleString('es-CL') + suffix;
+      snap: { val: isFloat ? 0.1 : 1 },
+      onUpdate: () => {
+        const v = isFloat ? obj.val.toFixed(1) : Math.round(obj.val).toLocaleString('es-CL');
+        el.textContent = v + suffix;
       }
     });
-  },
-
-  /**
-   * Set up all counter elements and trigger them on scroll.
-   * Expects: data-counter="value" data-suffix="+" data-duration="2"
-   */
-  initAll() {
-    if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
-
-    document.querySelectorAll('[data-counter]').forEach(el => {
-      const target   = parseFloat(el.dataset.counter);
-      const suffix   = el.dataset.suffix   || '';
-      const duration = parseFloat(el.dataset.duration) || 2;
-      let triggered  = false;
-
-      ScrollTrigger.create({
-        trigger: el,
-        start: 'top 85%',
-        onEnter() {
-          if (!triggered) {
-            triggered = true;
-            CounterAnimation.animate(el, target, suffix, duration);
-          }
-        }
-      });
-    });
-  }
-};
-
-/* ---- 4. Video Autoplay via IntersectionObserver ---- */
-const VideoAutoplay = {
-  init() {
-    const videos = document.querySelectorAll('.phone-mockup__screen video, [data-autoplay]');
-    if (!videos.length) return;
-
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        const video = entry.target;
-        if (entry.isIntersecting) {
-          video.play().catch(() => {});
-        } else {
-          video.pause();
-        }
-      });
-    }, { threshold: 0.4 });
-
-    videos.forEach(v => {
-      v.muted = true;
-      v.loop  = true;
-      v.playsInline = true;
-      observer.observe(v);
-    });
-  },
-
-  /**
-   * Hover-play for card videos.
-   */
-  initHover() {
-    document.querySelectorAll('[data-hover-play]').forEach(wrapper => {
-      const video = wrapper.querySelector('video');
-      if (!video) return;
-
-      video.muted = true;
-      video.loop  = true;
-      video.playsInline = true;
-
-      wrapper.addEventListener('mouseenter', () => video.play().catch(() => {}));
-      wrapper.addEventListener('mouseleave', () => {
-        video.pause();
-        video.currentTime = 0;
-      });
-    });
-  }
-};
-
-/* ---- 5. Chart.js Helpers ---- */
-const ChartHelper = {
-  /**
-   * Default chart theme aligned with base.css variables.
-   */
-  defaults: {
-    colorPrimary:    '#1B4332',
-    colorAccent:     '#52B788',
-    colorAccentLight:'#74C69D',
-    colorXlight:     '#D8F3DC',
-    colorGrid:       'rgba(0,0,0,0.06)',
-    fontFamily:      "'Inter', sans-serif",
-  },
-
-  /**
-   * Apply global Chart.js defaults.
-   */
-  applyDefaults() {
-    if (typeof Chart === 'undefined') return;
-
-    Chart.defaults.font.family  = this.defaults.fontFamily;
-    Chart.defaults.font.size    = 12;
-    Chart.defaults.color        = '#8A9BA8';
-    Chart.defaults.plugins.legend.display = false;
-  },
-
-  /**
-   * Create an area/line growth chart.
-   */
-  createGrowthChart(canvas, labels, datasets) {
-    if (typeof Chart === 'undefined' || !canvas) return null;
-
-    return new Chart(canvas, {
-      type: 'line',
-      data: { labels, datasets },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        interaction: { mode: 'index', intersect: false },
-        plugins: {
-          legend: {
-            display: true,
-            position: 'top',
-            labels: {
-              usePointStyle: true,
-              pointStyle: 'circle',
-              padding: 20,
-              font: { size: 12, family: this.defaults.fontFamily }
-            }
-          },
-          tooltip: {
-            backgroundColor: '#1B4332',
-            titleColor: '#D8F3DC',
-            bodyColor: '#A7D5BC',
-            cornerRadius: 10,
-            padding: 12,
-          }
-        },
-        scales: {
-          x: {
-            grid: { color: this.defaults.colorGrid },
-            ticks: { font: { size: 11 } }
-          },
-          y: {
-            grid: { color: this.defaults.colorGrid },
-            ticks: {
-              font: { size: 11 },
-              callback: v => v.toLocaleString('es-CL') + ' ha'
-            }
-          }
-        },
-        elements: {
-          line: { tension: 0.4 },
-          point: { radius: 4, hoverRadius: 6 }
-        }
-      }
-    });
-  },
-
-  /**
-   * Create a doughnut/pie chart.
-   */
-  createDoughnut(canvas, labels, data, colors) {
-    if (typeof Chart === 'undefined' || !canvas) return null;
-
-    return new Chart(canvas, {
-      type: 'doughnut',
-      data: {
-        labels,
-        datasets: [{
-          data,
-          backgroundColor: colors || [
-            this.defaults.colorPrimary,
-            this.defaults.colorAccent,
-            this.defaults.colorAccentLight,
-            this.defaults.colorXlight,
-          ],
-          borderWidth: 2,
-          borderColor: '#fff',
-          hoverOffset: 6
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        cutout: '65%',
-        plugins: {
-          legend: {
-            display: true,
-            position: 'bottom',
-            labels: {
-              padding: 16,
-              usePointStyle: true,
-              font: { size: 11, family: this.defaults.fontFamily }
-            }
-          }
-        }
-      }
-    });
-  }
-};
-
-/* ---- 6. Lazy init Chart on scroll ---- */
-const LazyChart = {
-  charts: [],
-
-  register(canvasId, initFn) {
-    if (typeof ScrollTrigger === 'undefined') {
-      // Fallback: init immediately
-      const el = document.getElementById(canvasId);
-      if (el) initFn(el);
-      return;
+  } else {
+    // Fallback sin GSAP
+    const start = performance.now();
+    const ms    = duration * 1000;
+    function step(now) {
+      const p = Math.min((now - start) / ms, 1);
+      const eased = 1 - Math.pow(1 - p, 3);
+      const v = Math.round(eased * target);
+      el.textContent = v.toLocaleString('es-CL') + suffix;
+      if (p < 1) requestAnimationFrame(step);
     }
+    requestAnimationFrame(step);
+  }
+}
 
-    const el = document.getElementById(canvasId);
-    if (!el) return;
+/* ---- Inicializar contadores con IntersectionObserver ------ */
+function initCounters() {
+  const counters = document.querySelectorAll('[data-counter]');
+  if (!counters.length) return;
 
-    let created = false;
-    ScrollTrigger.create({
-      trigger: el,
-      start: 'top 80%',
-      onEnter() {
-        if (!created) {
-          created = true;
-          const chart = initFn(el);
-          if (chart) LazyChart.charts.push(chart);
-        }
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting && !entry.target.dataset.counted) {
+        entry.target.dataset.counted = 'true';
+        const target   = parseFloat(entry.target.dataset.counter);
+        const suffix   = entry.target.dataset.suffix  || '';
+        const duration = parseFloat(entry.target.dataset.duration) || 2;
+        const isFloat  = entry.target.dataset.float === 'true';
+        animateCounter(entry.target, target, duration, suffix, isFloat);
       }
     });
-  }
-};
+  }, { threshold: 0.5 });
 
-/* ---- 7. Smooth scroll for anchor links ---- */
-const SmoothScroll = {
-  init() {
-    document.querySelectorAll('a[href^="#"]').forEach(link => {
-      link.addEventListener('click', e => {
-        const target = document.querySelector(link.getAttribute('href'));
-        if (target) {
-          e.preventDefault();
-          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-      });
-    });
-  }
-};
+  counters.forEach(c => observer.observe(c));
+}
 
-/* ---- 8. Mobile nav toggle ---- */
-const MobileNav = {
-  init() {
-    const toggle = document.querySelector('.nav-toggle');
-    const links  = document.querySelector('.nav-links');
-    if (!toggle || !links) return;
+/* ---- Video autoplay con IntersectionObserver -------------- */
+function initVideoAutoplay() {
+  const videos = document.querySelectorAll('.phone__screen video, [data-autoplay]');
+  if (!videos.length) return;
 
-    toggle.addEventListener('click', () => {
-      links.classList.toggle('open');
-      toggle.classList.toggle('active');
-    });
-  }
-};
-
-/* ---- 9. Stagger children on scroll ---- */
-const StaggerReveal = {
-  init() {
-    if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
-
-    document.querySelectorAll('[data-stagger]').forEach(parent => {
-      const children = parent.children;
-      const delay    = parseFloat(parent.dataset.stagger) || 0.1;
-
-      gsap.fromTo(Array.from(children),
-        { opacity: 0, y: 30 },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 0.6,
-          stagger: delay,
-          ease: 'power2.out',
-          scrollTrigger: {
-            trigger: parent,
-            start: 'top 80%',
-          }
-        }
-      );
-    });
-  }
-};
-
-/* ---- 10. Typewriter Effect ---- */
-const Typewriter = {
-  /**
-   * @param {HTMLElement} el
-   * @param {string[]} words
-   * @param {number} speed ms per character
-   */
-  init(el, words, speed = 80) {
-    if (!el || !words.length) return;
-
-    let wordIdx = 0;
-    let charIdx = 0;
-    let deleting = false;
-
-    const tick = () => {
-      const current = words[wordIdx];
-      if (deleting) {
-        el.textContent = current.substring(0, charIdx--);
-        if (charIdx < 0) {
-          deleting = false;
-          wordIdx  = (wordIdx + 1) % words.length;
-          setTimeout(tick, 500);
-          return;
-        }
-        setTimeout(tick, speed / 2);
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      const video = entry.target;
+      if (entry.isIntersecting) {
+        video.play().catch(() => {});
       } else {
-        el.textContent = current.substring(0, charIdx++);
-        if (charIdx > current.length) {
-          deleting = true;
-          setTimeout(tick, 2000);
-          return;
-        }
-        setTimeout(tick, speed);
+        video.pause();
       }
-    };
+    });
+  }, { threshold: 0.4 });
 
-    tick();
+  videos.forEach(v => {
+    v.muted    = true;
+    v.loop     = true;
+    v.playsInline = true;
+    observer.observe(v);
+  });
+}
+
+/* ---- Video hover play en cards ---------------------------- */
+function initVideoHover() {
+  const cards = document.querySelectorAll('[data-video-hover]');
+  cards.forEach(card => {
+    const video = card.querySelector('video');
+    if (!video) return;
+    video.muted    = true;
+    video.loop     = true;
+    video.playsInline = true;
+    card.addEventListener('mouseenter', () => video.play().catch(() => {}));
+    card.addEventListener('mouseleave', () => { video.pause(); video.currentTime = 0; });
+  });
+}
+
+/* ---- Resize handler con debounce -------------------------- */
+function debounce(fn, delay = 200) {
+  let timer;
+  return (...args) => {
+    clearTimeout(timer);
+    timer = setTimeout(() => fn.apply(this, args), delay);
+  };
+}
+
+/* ---- Smooth reveal para elementos con data-reveal --------- */
+function initReveal() {
+  if (typeof gsap === 'undefined') return;
+  const els = document.querySelectorAll('[data-reveal]');
+  els.forEach(el => {
+    const dir = el.dataset.reveal || 'up';
+    const delay = parseFloat(el.dataset.delay) || 0;
+    const fromVars = { opacity: 0, duration: 0.9, delay, ease: 'power3.out' };
+    if (dir === 'up')    fromVars.y = 50;
+    if (dir === 'down')  fromVars.y = -50;
+    if (dir === 'left')  fromVars.x = 60;
+    if (dir === 'right') fromVars.x = -60;
+
+    gsap.from(el, {
+      ...fromVars,
+      scrollTrigger: {
+        trigger: el,
+        start: 'top 88%',
+        toggleActions: 'play none none none'
+      }
+    });
+  });
+}
+
+/* ---- Cargar datos JSON ------------------------------------ */
+async function loadData(path) {
+  try {
+    const res = await fetch(path);
+    if (!res.ok) throw new Error('No se pudo cargar: ' + path);
+    return await res.json();
+  } catch (err) {
+    console.warn('loadData error:', err);
+    return null;
   }
-};
+}
 
-/* ---- 11. Init all on DOMContentLoaded ---- */
+/* ---- Render de lista de features en HTML ------------------ */
+function renderFeatureList(features, containerSelector) {
+  const el = document.querySelector(containerSelector);
+  if (!el || !features) return;
+  el.innerHTML = features.map(f =>
+    `<li class="feature-item">${f}</li>`
+  ).join('');
+}
+
+/* ---- Actualizar tab activo -------------------------------- */
+function setActiveTab(tabs, index) {
+  tabs.forEach((tab, i) => {
+    tab.classList.toggle('active', i === index);
+  });
+}
+
+/* ---- Utilidad: format number ------------------------------ */
+function formatNumber(n) {
+  return n.toLocaleString('es-CL');
+}
+
+/* ---- Init global ----------------------------------------- */
 document.addEventListener('DOMContentLoaded', () => {
-  ProgressBar.init();
-  NavScroll.init();
-  SmoothScroll.init();
-  MobileNav.init();
-  VideoAutoplay.init();
-  VideoAutoplay.initHover();
-
-  // These need GSAP/ScrollTrigger — called after scripts load:
-  if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
-    gsap.registerPlugin(ScrollTrigger);
-    ChartHelper.applyDefaults();
-    CounterAnimation.initAll();
-    StaggerReveal.init();
-  }
+  initProgressBar();
+  initCounters();
+  initVideoAutoplay();
+  initVideoHover();
+  initReveal();
 });
 
-/* Export for use in main.js */
+/* ---- Exports para uso en main.js -------------------------- */
 window.BaumCore = {
-  ProgressBar,
-  NavScroll,
-  CounterAnimation,
-  VideoAutoplay,
-  ChartHelper,
-  LazyChart,
-  SmoothScroll,
-  StaggerReveal,
-  Typewriter,
+  animateCounter,
+  initCounters,
+  initProgressBar,
+  initVideoAutoplay,
+  initReveal,
+  loadData,
+  renderFeatureList,
+  setActiveTab,
+  formatNumber,
+  debounce
 };
