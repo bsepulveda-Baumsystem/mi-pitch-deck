@@ -1,464 +1,530 @@
-/* ============================================================
-   MAIN.JS — Lógica de animaciones GSAP + Chart.js
-   Baumsystem Pitch Deck
-   ============================================================ */
+/* =============================================
+   MAIN.JS — Baumsystem Pitch Deck
+   Brand-specific GSAP animations & interactions
+   ============================================= */
 
 'use strict';
 
-/* ---- Registro de plugins GSAP ---------------------------- */
-gsap.registerPlugin(ScrollTrigger);
+document.addEventListener('DOMContentLoaded', () => {
+  if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') {
+    console.warn('Baumsystem: GSAP or ScrollTrigger not loaded.');
+    initFallback();
+    return;
+  }
 
-/* ---- 1. Animación de entrada Hero (sin scroll) ----------- */
-function initHeroAnimation() {
+  gsap.registerPlugin(ScrollTrigger);
+
+  initHeroAnimations();
+  initScrollReveal();
+  initModuleTabs();
+  initGrowthChart();
+  initCTASection();
+  initNavActiveState();
+});
+
+/* ============================================================
+   1. HERO — entrance animations on load
+   ============================================================ */
+function initHeroAnimations() {
   const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
 
-  tl.from('.hero__logo',     { y: 30, opacity: 0, duration: 0.8 })
-    .from('.hero__label',    { y: 20, opacity: 0, duration: 0.6 }, '-=0.4')
-    .from('.hero__title',    { y: 60, opacity: 0, duration: 1.0 }, '-=0.4')
-    .from('.hero__subtitle', { y: 30, opacity: 0, duration: 0.7 }, '-=0.5')
-    .from('.hero__stats .hero__stat',
-                             { y: 24, opacity: 0, stagger: 0.12, duration: 0.6 }, '-=0.4')
-    .from('.hero__cta-row',  { y: 20, opacity: 0, duration: 0.6 }, '-=0.3')
-    .from('.scroll-indicator',{ y: 10, opacity: 0, duration: 0.5 }, '-=0.2');
+  tl.from('.s-hero__eyebrow', { opacity: 0, y: 24, duration: 0.7, delay: 0.2 })
+    .from('.s-hero__title',    { opacity: 0, y: 40, duration: 0.8 }, '-=0.4')
+    .from('.s-hero__subtitle', { opacity: 0, y: 24, duration: 0.7 }, '-=0.5')
+    .from('.s-hero__actions',  { opacity: 0, y: 20, duration: 0.6 }, '-=0.4')
+    .from('.s-hero__social-proof', { opacity: 0, y: 16, duration: 0.6 }, '-=0.3')
+    .from('.s-hero__visual .phone-mockup',
+          { opacity: 0, x: 60, scale: 0.95, duration: 0.9 }, '-=0.8')
+    .from('.s-hero__badge--1', { opacity: 0, x: 30, duration: 0.5 }, '-=0.4')
+    .from('.s-hero__badge--2', { opacity: 0, x: -30, duration: 0.5 }, '-=0.3');
 }
 
-/* ---- 2. Sección Problema (pinned) ------------------------- */
-function initProblemSection() {
-  const section = document.getElementById('problem');
-  if (!section) return;
-
-  const cards = gsap.utils.toArray('.pain-card');
-  if (!cards.length) return;
-
-  gsap.set(cards, { opacity: 0, y: 60 });
-
-  const tl = gsap.timeline({
-    scrollTrigger: {
-      trigger: section,
-      start: 'top top',
-      end: `+=${cards.length * 80}%`,
-      pin: true,
-      scrub: 1.2,
-      anticipatePin: 1
-    }
-  });
-
-  cards.forEach((card, i) => {
-    tl.to(card, { opacity: 1, y: 0, duration: 0.5 }, i * 0.4)
-      .to(card, { opacity: 1, duration: 0.3 }, i * 0.4 + 0.3);
-  });
-}
-
-/* ---- 3. Sección Solución ---------------------------------- */
-function initSolutionSection() {
-  const section = document.getElementById('solution');
-  if (!section) return;
-
-  const tl = gsap.timeline({
-    scrollTrigger: {
-      trigger: section,
-      start: 'top 75%',
-      once: true
-    }
-  });
-
-  tl.from('#solution .section-header', { y: 50, opacity: 0, duration: 0.8 })
-    .from('#solution .solution-col--left > *',
-          { y: 40, opacity: 0, stagger: 0.1, duration: 0.7 }, '-=0.4')
-    .from('#solution .phone-wrap',
-          { x: 60, opacity: 0, duration: 0.9, ease: 'power3.out' }, '-=0.6');
-}
-
-/* ---- 4. Sección Process (cards una por una) -------------- */
-function initProcessSection() {
-  gsap.utils.toArray('.step-card').forEach((card, i) => {
-    gsap.from(card, {
-      y: 60,
-      opacity: 0,
-      duration: 0.7,
-      delay: i * 0.08,
-      ease: 'power3.out',
-      scrollTrigger: {
-        trigger: card,
-        start: 'top 85%',
-        once: true
-      }
-    });
-  });
-}
-
-/* ---- 5. Módulos con tabs controlados por scroll ----------- */
-function initModulesSection() {
-  const section   = document.getElementById('modules');
-  if (!section) return;
-
-  const panels    = gsap.utils.toArray('.module-panel');
-  const tabBtns   = gsap.utils.toArray('.tab-btn');
-  if (!panels.length) return;
-
-  const PANEL_COUNT = panels.length;
-
-  // Estado inicial: primer panel visible
-  gsap.set(panels[0], { opacity: 1, pointerEvents: 'auto' });
-  tabBtns[0]?.classList.add('active');
-
-  const tl = gsap.timeline({
-    scrollTrigger: {
-      trigger: section,
-      start: 'top top',
-      end: `+=${PANEL_COUNT * 110}%`,
-      pin: true,
-      scrub: 1,
-      anticipatePin: 1,
-      onUpdate(self) {
-        const raw      = self.progress * PANEL_COUNT;
-        const idx      = Math.min(Math.floor(raw), PANEL_COUNT - 1);
-        const localPct = raw - idx; // progreso dentro del panel actual
-
-        // Actualizar opacidad de cada panel
-        panels.forEach((p, i) => {
-          let alpha = 0;
-          if (i === idx) {
-            alpha = Math.min(localPct * 3, 1); // fade in rápido
-          } else if (i === idx - 1) {
-            alpha = Math.max(1 - localPct * 3, 0); // fade out rápido
-          } else if (i < idx) {
-            alpha = 0;
-          }
-          gsap.set(p, { opacity: alpha, pointerEvents: alpha > 0.5 ? 'auto' : 'none' });
-        });
-
-        // Actualizar tabs
-        tabBtns.forEach((btn, i) => btn.classList.toggle('active', i === idx));
-      }
-    }
-  });
-
-  // La timeline sólo necesita existir para que ScrollTrigger la controle
-  tl.to({}, { duration: PANEL_COUNT });
-
-  // Clic manual en tab (salta a esa posición)
-  tabBtns.forEach((btn, i) => {
-    btn.addEventListener('click', () => {
-      // Calcular la posición de scroll que corresponde al panel i
-      const st       = ScrollTrigger.getById('modules-st');
-      if (!st) return;
-      const target   = st.start + (i / PANEL_COUNT) * (st.end - st.start) + 10;
-      window.scrollTo({ top: target, behavior: 'smooth' });
-    });
-  });
-}
-
-/* ---- 6. KPI Counters -------------------------------------- */
-function initKPISection() {
-  const section = document.getElementById('kpis');
-  if (!section) return;
-
-  gsap.from('.kpi-card', {
-    y: 50,
-    opacity: 0,
-    stagger: 0.1,
-    duration: 0.7,
-    ease: 'power3.out',
-    scrollTrigger: {
-      trigger: section,
-      start: 'top 80%',
-      once: true
-    }
-  });
-}
-
-/* ---- 7. Gráfico de crecimiento (Chart.js) ----------------- */
-let growthChart = null;
-
-async function initGrowthChart() {
-  const canvas = document.getElementById('growthChart');
-  if (!canvas) return;
-
-  // Cargar datos desde JSON
-  const data = await window.BaumCore?.loadData('../../data/baumsystem.json');
-  if (!data) return;
-
-  const { labels, hectares, isProjection } = data.growth;
-
-  // Colores
-  const solidColor   = 'rgba(34, 214, 114, 1)';
-  const solidBg      = 'rgba(34, 214, 114, 0.15)';
-  const projColor    = 'rgba(94, 234, 212, 0.7)';
-  const projBg       = 'rgba(94, 234, 212, 0.08)';
-
-  // Dividir en segmentos sólido y proyección
-  const solidHa  = hectares.map((v, i) => isProjection[i] ? null : v);
-  const projHa   = hectares.map((v, i) => {
-    // El punto de transición debe aparecer en ambos
-    if (isProjection[i]) return v;
-    if (i > 0 && isProjection[i + 1]) return v; // último punto sólido
-    return null;
-  });
-
-  const ctx = canvas.getContext('2d');
-
-  growthChart = new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels,
-      datasets: [
-        {
-          label: 'Hectáreas bajo servicio',
-          data: solidHa,
-          borderColor: solidColor,
-          backgroundColor: solidBg,
-          fill: true,
-          tension: 0.4,
-          borderWidth: 3,
-          pointBackgroundColor: solidColor,
-          pointBorderColor: '#070d07',
-          pointBorderWidth: 2,
-          pointRadius: 5,
-          pointHoverRadius: 7,
-          spanGaps: false
-        },
-        {
-          label: 'Proyección',
-          data: projHa,
-          borderColor: projColor,
-          backgroundColor: projBg,
-          fill: true,
-          tension: 0.4,
-          borderWidth: 2,
-          borderDash: [6, 4],
-          pointBackgroundColor: projColor,
-          pointBorderColor: '#070d07',
-          pointBorderWidth: 2,
-          pointRadius: 5,
-          spanGaps: false
-        }
-      ]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      animation: { duration: 1800, easing: 'easeInOutQuart' },
-      plugins: {
-        legend: { display: false },
-        tooltip: {
-          backgroundColor: 'rgba(16, 26, 16, 0.95)',
-          borderColor: 'rgba(34, 214, 114, 0.3)',
-          borderWidth: 1,
-          titleColor: '#22d672',
-          bodyColor: '#d1fae5',
-          padding: 12,
-          callbacks: {
-            label(ctx) {
-              const v = ctx.raw;
-              if (!v) return '';
-              return ` ${v.toLocaleString('es-CL')} hectáreas`;
-            }
-          }
-        }
-      },
-      scales: {
-        x: {
-          grid: { color: 'rgba(34, 214, 114, 0.05)' },
-          ticks: { color: '#6b7280', font: { size: 11 } }
-        },
-        y: {
-          grid: { color: 'rgba(34, 214, 114, 0.05)' },
-          ticks: {
-            color: '#6b7280',
-            font: { size: 11 },
-            callback: v => (v >= 1000 ? (v / 1000).toFixed(0) + 'k' : v)
-          }
+/* ============================================================
+   2. SCROLL REVEAL — generic fade-up elements
+   ============================================================ */
+function initScrollReveal() {
+  // Fade up
+  gsap.utils.toArray('.anim-fade-up').forEach(el => {
+    gsap.fromTo(el,
+      { opacity: 0, y: 40 },
+      {
+        opacity: 1, y: 0,
+        duration: 0.8,
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: el,
+          start: 'top 88%',
+          once: true
         }
       }
-    }
+    );
   });
 
-  // Inicializar chart al llegar a la sección
-  let chartInited = false;
+  // Fade left
+  gsap.utils.toArray('.anim-fade-left').forEach(el => {
+    gsap.fromTo(el,
+      { opacity: 0, x: -50 },
+      {
+        opacity: 1, x: 0,
+        duration: 0.9,
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: el,
+          start: 'top 85%',
+          once: true
+        }
+      }
+    );
+  });
+
+  // Fade right
+  gsap.utils.toArray('.anim-fade-right').forEach(el => {
+    gsap.fromTo(el,
+      { opacity: 0, x: 50 },
+      {
+        opacity: 1, x: 0,
+        duration: 0.9,
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: el,
+          start: 'top 85%',
+          once: true
+        }
+      }
+    );
+  });
+
+  // Scale in
+  gsap.utils.toArray('.anim-scale-in').forEach(el => {
+    gsap.fromTo(el,
+      { opacity: 0, scale: 0.88 },
+      {
+        opacity: 1, scale: 1,
+        duration: 0.9,
+        ease: 'back.out(1.5)',
+        scrollTrigger: {
+          trigger: el,
+          start: 'top 85%',
+          once: true
+        }
+      }
+    );
+  });
+
+  // Stagger children (excluye los que están dentro de paneles de módulos,
+  // que son animados por initModuleTabs() al cambiar de tab)
+  gsap.utils.toArray('[data-stagger]').forEach(parent => {
+    if (parent.closest('.s-modules__panel')) return; // skip module panel children
+
+    const children = Array.from(parent.children);
+    const delay    = parseFloat(parent.dataset.stagger) || 0.1;
+
+    gsap.fromTo(children,
+      { opacity: 0, y: 28 },
+      {
+        opacity: 1,
+        y: 0,
+        duration: 0.65,
+        stagger: delay,
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: parent,
+          start: 'top 82%',
+          once: true
+        }
+      }
+    );
+  });
+
+  // ---- Problem section cards with pin effect ----
   ScrollTrigger.create({
-    trigger: '#chart',
+    trigger: '.s-problem',
+    start: 'top 70%',
+    once: true,
+    onEnter() {
+      gsap.from('.s-problem__card', {
+        opacity: 0,
+        y: 60,
+        scale: 0.95,
+        stagger: 0.15,
+        duration: 0.8,
+        ease: 'power2.out'
+      });
+    }
+  });
+
+  // ---- Solution section pillars ----
+  ScrollTrigger.create({
+    trigger: '.s-solution__pillars',
     start: 'top 80%',
     once: true,
     onEnter() {
-      if (chartInited) return;
-      chartInited = true;
-      // Trigger update para que se anime al entrar
-      growthChart.update('active');
-
-      // Animar pipeline cards
-      gsap.from('.pipeline-card', {
-        y: 30,
+      gsap.from('.s-solution__pillar', {
         opacity: 0,
+        x: -30,
+        stagger: 0.12,
+        duration: 0.6,
+        ease: 'power2.out'
+      });
+    }
+  });
+
+  // ---- Benefits cards ----
+  ScrollTrigger.create({
+    trigger: '.s-benefits__grid',
+    start: 'top 75%',
+    once: true,
+    onEnter() {
+      gsap.from('.s-benefits__card', {
+        opacity: 0,
+        y: 50,
+        stagger: 0.1,
+        duration: 0.7,
+        ease: 'power2.out'
+      });
+    }
+  });
+
+  // ---- Process steps ----
+  ScrollTrigger.create({
+    trigger: '.s-process__steps',
+    start: 'top 75%',
+    once: true,
+    onEnter() {
+      gsap.from('.s-process__step', {
+        opacity: 0,
+        y: 40,
+        stagger: 0.15,
+        duration: 0.75,
+        ease: 'power2.out'
+      });
+    }
+  });
+
+  // ---- KPI cards ----
+  ScrollTrigger.create({
+    trigger: '.s-kpis__grid',
+    start: 'top 80%',
+    once: true,
+    onEnter() {
+      gsap.from('.s-kpis__card', {
+        opacity: 0,
+        y: 40,
+        scale: 0.9,
+        stagger: 0.1,
+        duration: 0.7,
+        ease: 'back.out(1.4)'
+      });
+    }
+  });
+
+  // ---- Expansion prospects ----
+  ScrollTrigger.create({
+    trigger: '.s-kpis__expansion-grid',
+    start: 'top 85%',
+    once: true,
+    onEnter() {
+      gsap.from('.s-kpis__prospect', {
+        opacity: 0,
+        y: 30,
         stagger: 0.1,
         duration: 0.6,
-        ease: 'power3.out',
-        delay: 0.4
+        ease: 'power2.out'
+      });
+    }
+  });
+
+  // ---- CTA section animated entrance ----
+  ScrollTrigger.create({
+    trigger: '.s-cta',
+    start: 'top 60%',
+    once: true,
+    onEnter() {
+      const tl = gsap.timeline();
+      tl.from('.s-cta__logo',     { opacity: 0, scale: 0.8, duration: 0.7, ease: 'back.out(1.5)' })
+        .from('.s-cta__title',    { opacity: 0, y: 40, duration: 0.8, ease: 'power2.out' }, '-=0.3')
+        .from('.s-cta__subtitle', { opacity: 0, y: 24, duration: 0.7, ease: 'power2.out' }, '-=0.4')
+        .from('.s-cta__actions',  { opacity: 0, y: 20, duration: 0.6 }, '-=0.3')
+        .from('.s-cta__proof',    { opacity: 0, y: 16, duration: 0.5 }, '-=0.2');
+    }
+  });
+
+  // ---- Growth section ----
+  ScrollTrigger.create({
+    trigger: '.s-growth__layout',
+    start: 'top 70%',
+    once: true,
+    onEnter() {
+      gsap.from('.s-growth__text', { opacity: 0, x: -50, duration: 0.9, ease: 'power2.out' });
+      gsap.from('.s-growth__chart-wrap', { opacity: 0, x: 50, duration: 0.9, ease: 'power2.out', delay: 0.1 });
+      gsap.from('.s-growth__milestone', {
+        opacity: 0,
+        y: 20,
+        stagger: 0.12,
+        duration: 0.6,
+        ease: 'power2.out',
+        delay: 0.3
       });
     }
   });
 }
 
-/* ---- 8. Benefits Section ---------------------------------- */
-function initBenefitsSection() {
-  gsap.utils.toArray('.benefit-card').forEach((card, i) => {
-    gsap.from(card, {
-      y: 50,
-      opacity: 0,
-      duration: 0.7,
-      delay: i * 0.1,
-      ease: 'power3.out',
-      scrollTrigger: {
-        trigger: card,
-        start: 'top 85%',
-        once: true
-      }
-    });
-  });
+/* ============================================================
+   3. MODULE TABS — interactive panel switching
+   ============================================================ */
+function initModuleTabs() {
+  const tabNav    = document.getElementById('moduleTabNav');
+  const panels    = document.querySelectorAll('.s-modules__panel');
+  const tabBtns   = document.querySelectorAll('.tab-btn');
 
-  gsap.from('.testimonial', {
-    y: 40,
-    opacity: 0,
-    duration: 0.8,
-    ease: 'power3.out',
-    scrollTrigger: {
-      trigger: '.testimonial',
-      start: 'top 85%',
-      once: true
-    }
-  });
-}
+  if (!tabNav || !panels.length) return;
 
-/* ---- 9. Closing Section (pinned) -------------------------- */
-function initClosingSection() {
-  const section = document.getElementById('closing');
-  if (!section) return;
+  // Poner todos los paneles invisibles con GSAP desde el inicio
+  // (autoAlpha controla opacity + visibility juntos, sin el bug de display:none)
+  gsap.set(panels, { autoAlpha: 0, y: 16 });
 
-  const tl = gsap.timeline({
-    scrollTrigger: {
-      trigger: section,
-      start: 'top top',
-      end: '+=150%',
-      pin: true,
-      scrub: 1,
-      anticipatePin: 1
-    }
-  });
+  let currentIdx = -1; // rastrear el panel activo
 
-  tl.from('.closing__logo',    { scale: 0.7, opacity: 0, duration: 1 })
-    .from('.closing__subtitle',{ y: 30, opacity: 0, duration: 0.6 }, '-=0.3')
-    .from('.closing__actions > *',
-                               { y: 20, opacity: 0, stagger: 0.15, duration: 0.5 }, '-=0.2')
-    .from('.closing__contact', { opacity: 0, duration: 0.5 }, '-=0.1');
-}
+  function showPanel(idx) {
+    if (idx === currentIdx) return; // evitar re-animación del mismo panel
+    currentIdx = idx;
 
-/* ---- 10. Section header reveals --------------------------- */
-function initSectionRevealHeaders() {
-  document.querySelectorAll('.section-header').forEach(el => {
-    gsap.from(el, {
-      y: 40,
-      opacity: 0,
-      duration: 0.8,
-      ease: 'power3.out',
-      scrollTrigger: {
-        trigger: el,
-        start: 'top 85%',
-        once: true
-      }
-    });
-  });
-}
-
-/* ---- 11. Floating phone animation in hero ----------------- */
-function initPhoneFloat() {
-  gsap.to('.phone-wrap .phone', {
-    y: -12,
-    duration: 3,
-    ease: 'sine.inOut',
-    repeat: -1,
-    yoyo: true
-  });
-}
-
-/* ---- 12. Animar barras del laptop mockup ------------------ */
-function initLaptopBars() {
-  const bars = document.querySelectorAll('.laptop-bar');
-  bars.forEach((bar, i) => {
-    const heights = [45, 72, 55, 88, 62, 76, 51, 93];
-    bar.style.height = '0%';
-    ScrollTrigger.create({
-      trigger: bar,
-      start: 'top 90%',
-      once: true,
-      onEnter() {
-        gsap.to(bar, {
-          height: heights[i % heights.length] + '%',
-          duration: 1.2,
-          delay: i * 0.08,
-          ease: 'power3.out'
+    // Ocultar todos los paneles que NO son el seleccionado
+    panels.forEach(p => {
+      const panelIdx = parseInt(p.dataset.panel, 10);
+      if (panelIdx !== idx) {
+        p.classList.remove('active');
+        gsap.to(p, {
+          autoAlpha: 0,
+          y: 16,
+          duration: 0.2,
+          ease: 'power2.in',
+          overwrite: 'auto'
         });
       }
     });
-  });
-}
+    tabBtns.forEach(b => b.classList.remove('active'));
 
-/* ---- Render de paneles desde JSON ------------------------- */
-async function renderModulePanels() {
-  const data = await window.BaumCore?.loadData('../../data/baumsystem.json');
-  if (!data) return;
+    // Mostrar el panel seleccionado
+    const panel = document.querySelector(`.s-modules__panel[data-panel="${idx}"]`);
+    const btn   = document.querySelector(`.tab-btn[data-tab="${idx}"]`);
 
-  // Rellenar features de cada panel
-  data.modules.forEach((mod, i) => {
-    const panel = document.getElementById(`panel-${mod.id}`);
-    if (!panel) return;
-    const list = panel.querySelector('.feature-list');
-    if (!list) return;
-    list.innerHTML = mod.features.map(f =>
-      `<li class="feature-item">${f}</li>`
-    ).join('');
-  });
+    if (panel) {
+      panel.classList.add('active');
 
-  // Rellenar pipeline cards
-  const pipelineGrid = document.getElementById('pipelineGrid');
-  if (pipelineGrid && data.pipeline) {
-    pipelineGrid.innerHTML = data.pipeline.map(p => `
-      <div class="pipeline-card">
-        <div class="pipeline-card__flag">${p.flag}</div>
-        <div class="pipeline-card__info">
-          <div class="pipeline-card__company">${p.company}</div>
-          <div class="pipeline-card__country">${p.country}</div>
-        </div>
-        <div class="pipeline-card__ha">${p.hectares.toLocaleString('es-CL')} ha</div>
-      </div>
-    `).join('');
+      // Animar entrada con autoAlpha (maneja visibility + opacity juntos)
+      gsap.fromTo(panel,
+        { autoAlpha: 0, y: 20 },
+        { autoAlpha: 1, y: 0, duration: 0.5, ease: 'power2.out', overwrite: 'auto' }
+      );
+
+      // Re-animar los hijos con stagger dentro del panel activo
+      const staggerEls = panel.querySelectorAll('[data-stagger]');
+      staggerEls.forEach(container => {
+        gsap.fromTo(Array.from(container.children),
+          { autoAlpha: 0, y: 16 },
+          { autoAlpha: 1, y: 0, duration: 0.45, stagger: 0.09, ease: 'power2.out', delay: 0.2 }
+        );
+      });
+
+      // Animar feature items y semaphore items si no hay data-stagger explícito
+      if (!staggerEls.length) {
+        const featureItems = panel.querySelectorAll('.feature-item, .s-modules__semaphore-item');
+        if (featureItems.length) {
+          gsap.fromTo(featureItems,
+            { autoAlpha: 0, x: -14 },
+            { autoAlpha: 1, x: 0, duration: 0.4, stagger: 0.08, ease: 'power2.out', delay: 0.25 }
+          );
+        }
+      }
+    }
+
+    if (btn) btn.classList.add('active');
   }
+
+  tabBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const idx = parseInt(btn.dataset.tab, 10);
+      showPanel(idx);
+    });
+  });
+
+  // Mostrar el primer panel al cargar (con requestAnimationFrame para garantizar que
+  // el DOM y GSAP estén listos antes de la primera animación)
+  requestAnimationFrame(() => {
+    showPanel(0);
+  });
 }
 
-/* ---- Init principal --------------------------------------- */
-async function init() {
-  await renderModulePanels();
+/* ============================================================
+   4. GROWTH CHART — Chart.js lazy init
+   ============================================================ */
+function initGrowthChart() {
+  if (typeof Chart === 'undefined') return;
 
-  initHeroAnimation();
-  initProblemSection();
-  initSolutionSection();
-  initProcessSection();
-  initModulesSection();
-  initKPISection();
-  initGrowthChart();
-  initBenefitsSection();
-  initClosingSection();
-  initSectionRevealHeaders();
-  initPhoneFloat();
-  initLaptopBars();
+  const canvas = document.getElementById('growthChart');
+  if (!canvas) return;
 
-  // Refresh ScrollTrigger después de render
-  ScrollTrigger.refresh();
+  let created = false;
+
+  ScrollTrigger.create({
+    trigger: '#crecimiento',
+    start: 'top 70%',
+    once: true,
+    onEnter() {
+      if (created) return;
+      created = true;
+
+      new Chart(canvas, {
+        type: 'line',
+        data: {
+          labels: ['2021', '2022', '2023', '2024', '2025', '2026 (proy.)'],
+          datasets: [
+            {
+              label: 'Hectáreas bajo servicio',
+              data: [1200, 2800, 4500, 7000, 10000, 14500],
+              borderColor: '#1B4332',
+              backgroundColor: 'rgba(27,67,50,0.06)',
+              fill: true,
+              tension: 0.4,
+              pointBackgroundColor: '#1B4332',
+              pointBorderColor: '#fff',
+              pointBorderWidth: 2,
+              pointRadius: 5,
+              pointHoverRadius: 7,
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          animation: {
+            duration: 1200,
+            easing: 'easeInOutQuart'
+          },
+          interaction: { mode: 'index', intersect: false },
+          plugins: {
+            legend: {
+              display: true,
+              position: 'top',
+              align: 'start',
+              labels: {
+                usePointStyle: true,
+                pointStyle: 'circle',
+                padding: 20,
+                color: '#4A5D4C',
+                font: { size: 12, family: 'Inter, sans-serif', weight: '600' }
+              }
+            },
+            tooltip: {
+              backgroundColor: '#1B4332',
+              titleColor: '#D8F3DC',
+              bodyColor: '#A7D5BC',
+              cornerRadius: 10,
+              padding: 12,
+              callbacks: {
+                label(ctx) {
+                  return `  ${ctx.parsed.y.toLocaleString('es-CL')} ha`;
+                }
+              }
+            }
+          },
+          scales: {
+            x: {
+              grid: { color: 'rgba(0,0,0,0.04)' },
+              ticks: {
+                color: '#8FA890',
+                font: { size: 11, family: 'Inter, sans-serif' }
+              }
+            },
+            y: {
+              beginAtZero: true,
+              grid: { color: 'rgba(0,0,0,0.04)' },
+              ticks: {
+                color: '#8FA890',
+                font: { size: 11, family: 'Inter, sans-serif' },
+                callback: v => v.toLocaleString('es-CL') + ' ha'
+              }
+            }
+          },
+          elements: {
+            line: { borderWidth: 2.5 }
+          }
+        }
+      });
+    }
+  });
 }
 
-document.addEventListener('DOMContentLoaded', init);
+/* ============================================================
+   5. CTA SECTION — pulsing button effect
+   ============================================================ */
+function initCTASection() {
+  const ctaBtn = document.querySelector('.s-cta__btn-primary');
+  if (!ctaBtn) return;
 
-// Refresh on resize
-window.addEventListener('resize', window.BaumCore?.debounce(() => {
-  ScrollTrigger.refresh();
-  if (growthChart) growthChart.resize();
-}, 300));
+  // Subtle pulse on the CTA button
+  gsap.to(ctaBtn, {
+    boxShadow: '0 0 40px rgba(82,183,136,0.5), 0 0 80px rgba(82,183,136,0.15)',
+    duration: 1.5,
+    repeat: -1,
+    yoyo: true,
+    ease: 'sine.inOut',
+    delay: 3
+  });
+}
+
+/* ============================================================
+   6. NAV ACTIVE STATE — highlight current section
+   ============================================================ */
+function initNavActiveState() {
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('.nav-links a[href^="#"]');
+
+  if (!sections.length || !navLinks.length) return;
+
+  sections.forEach(section => {
+    ScrollTrigger.create({
+      trigger: section,
+      start: 'top 55%',
+      end: 'bottom 55%',
+      onToggle(self) {
+        if (self.isActive) {
+          navLinks.forEach(link => {
+            link.classList.remove('active');
+            if (link.getAttribute('href') === `#${section.id}`) {
+              link.classList.add('active');
+            }
+          });
+        }
+      }
+    });
+  });
+}
+
+/* ============================================================
+   7. FALLBACK — no GSAP, just make everything visible
+   ============================================================ */
+function initFallback() {
+  document.querySelectorAll(
+    '.anim-fade-up, .anim-fade-left, .anim-fade-right, .anim-scale-in'
+  ).forEach(el => {
+    el.style.opacity = '1';
+    el.style.transform = 'none';
+  });
+
+  // Still do module tabs with vanilla JS
+  const tabBtns = document.querySelectorAll('.tab-btn');
+  const panels  = document.querySelectorAll('.s-modules__panel');
+
+  tabBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const idx = btn.dataset.tab;
+      panels.forEach(p => p.classList.remove('active'));
+      tabBtns.forEach(b => b.classList.remove('active'));
+      const panel = document.querySelector(`.s-modules__panel[data-panel="${idx}"]`);
+      if (panel) panel.classList.add('active');
+      btn.classList.add('active');
+    });
+  });
+}

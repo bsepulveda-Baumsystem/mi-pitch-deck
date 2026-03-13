@@ -1,345 +1,313 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Baumsystem — Presentaciones</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Baumsystem — Presentaciones Comerciales</title>
+  <meta name="description" content="Baumsystem: plataforma de gestión de sistemas de riego agrícola." />
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Shared styles -->
+  <link rel="stylesheet" href="shared/css/base.css" />
 
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    /* Landing page specific overrides */
+    body { background: #F5F8F5; }
 
-    :root {
-      --color-bg:      #070d07;
-      --color-bg-2:    #0c160c;
-      --color-card:    #101a10;
-      --color-primary: #22d672;
-      --color-accent:  #6ee7b7;
-      --color-text:    #f0fdf4;
-      --color-muted:   #6b7280;
-      --color-border:  rgba(34, 214, 114, 0.12);
-      --font-heading:  'Sora', sans-serif;
-      --font-body:     'Inter', sans-serif;
-    }
-
-    html, body {
-      background: var(--color-bg);
-      color: var(--color-text);
-      font-family: var(--font-body);
-      min-height: 100vh;
-      -webkit-font-smoothing: antialiased;
-    }
-
-    .page {
+    .landing-hero {
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 4rem 1.5rem;
+      text-align: center;
+      padding: 120px 2rem 4rem;
+      background: linear-gradient(135deg, #F5F8F5 0%, #E8F5E9 60%, #D8F3DC 100%);
       position: relative;
       overflow: hidden;
     }
 
-    /* Fondo grid */
-    .page::before {
-      content: '';
+    .landing-hero__decor {
       position: absolute;
       inset: 0;
-      background-image:
-        linear-gradient(rgba(34,214,114,0.04) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(34,214,114,0.04) 1px, transparent 1px);
-      background-size: 60px 60px;
       pointer-events: none;
+      overflow: hidden;
     }
 
-    /* Glow central */
-    .page::after {
-      content: '';
+    .landing-hero__decor-circle {
       position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 700px;
-      height: 700px;
-      background: radial-gradient(circle, rgba(34,214,114,0.06) 0%, transparent 65%);
-      pointer-events: none;
+      border-radius: 50%;
     }
 
-    .content {
+    .landing-hero__decor-circle--1 {
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(82,183,136,0.12) 0%, transparent 70%);
+      right: -150px; top: -150px;
+    }
+
+    .landing-hero__decor-circle--2 {
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(27,67,50,0.06) 0%, transparent 70%);
+      left: -100px; bottom: -100px;
+    }
+
+    .landing-hero__content {
       position: relative;
       z-index: 1;
-      text-align: center;
-      max-width: 900px;
-      width: 100%;
+      max-width: 700px;
     }
 
-    .logo {
+    .landing-hero__badge {
       display: inline-flex;
       align-items: center;
-      gap: 12px;
-      margin-bottom: 1.5rem;
+      gap: 8px;
+      padding: 6px 16px;
+      background: rgba(27,67,50,0.08);
+      border: 1px solid rgba(27,67,50,0.15);
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #1B4332;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 24px;
     }
 
-    .logo__icon {
-      width: 48px;
-      height: 48px;
-      background: var(--color-primary);
-      border-radius: 12px;
+    .landing-hero__logo {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2.5rem, 8vw, 5rem);
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      color: #1B4332;
+      line-height: 1;
+      margin-bottom: 16px;
+    }
+
+    .landing-hero__logo span { color: #52B788; }
+
+    .landing-hero__sub {
+      font-size: clamp(1rem, 2.5vw, 1.2rem);
+      color: #4A5D4C;
+      line-height: 1.6;
+      margin-bottom: 48px;
+    }
+
+    /* Presentations grid */
+    .landing-grid {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 2rem 5rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+    }
+
+    .landing-card {
+      background: white;
+      border: 1px solid #C9E0CA;
+      border-radius: 20px;
+      padding: 32px;
+      text-decoration: none;
+      color: inherit;
+      transition: transform 300ms ease, box-shadow 300ms ease, border-color 300ms ease;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .landing-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 24px 64px rgba(0,0,0,0.1);
+      border-color: #52B788;
+    }
+
+    .landing-card__badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      width: fit-content;
+    }
+
+    .landing-card__badge--active {
+      background: #D8F3DC;
+      color: #1B4332;
+      border: 1px solid #52B788;
+    }
+
+    .landing-card__badge--coming {
+      background: #F3F4F6;
+      color: #9CA3AF;
+      border: 1px solid #E5E7EB;
+    }
+
+    .landing-card__icon {
+      width: 56px;
+      height: 56px;
+      border-radius: 14px;
+      background: #D8F3DC;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 24px;
+      color: #1B4332;
     }
 
-    .logo__text {
-      font-family: var(--font-heading);
-      font-size: 1.75rem;
+    .landing-card__title {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.375rem;
       font-weight: 800;
-      letter-spacing: -0.03em;
+      color: #1B4332;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
     }
 
-    .logo__text span { color: var(--color-primary); }
-
-    .headline {
-      font-family: var(--font-heading);
-      font-size: clamp(2rem, 5vw, 3.5rem);
-      font-weight: 800;
-      letter-spacing: -0.03em;
-      line-height: 1.1;
-      margin-bottom: 1.25rem;
-    }
-
-    .headline span { color: var(--color-primary); }
-
-    .subtitle {
-      font-size: 1.1rem;
-      color: var(--color-muted);
-      max-width: 480px;
-      margin: 0 auto 3rem;
+    .landing-card__desc {
+      font-size: 0.875rem;
+      color: #4A5D4C;
       line-height: 1.7;
     }
 
-    /* Grid de presentaciones */
-    .presentations-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 1.5rem;
-      text-align: left;
-    }
-
-    .pres-card {
-      background: var(--color-card);
-      border: 1px solid var(--color-border);
-      border-radius: 20px;
-      padding: 2rem;
-      text-decoration: none;
-      color: inherit;
-      transition: all 0.3s cubic-bezier(0.16,1,0.3,1);
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .pres-card::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 2px;
-      background: linear-gradient(90deg, var(--color-primary), var(--color-accent));
-      transform: scaleX(0);
-      transform-origin: left;
-      transition: transform 0.4s ease;
-    }
-
-    .pres-card:hover {
-      border-color: rgba(34,214,114,0.4);
-      transform: translateY(-6px);
-      box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 40px rgba(34,214,114,0.1);
-    }
-
-    .pres-card:hover::before { transform: scaleX(1); }
-
-    .pres-card__header {
+    .landing-card__cta {
       display: flex;
       align-items: center;
-      justify-content: space-between;
-    }
-
-    .pres-card__icon {
-      width: 48px;
-      height: 48px;
-      background: rgba(34,214,114,0.1);
-      border: 1px solid var(--color-border);
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 22px;
-    }
-
-    .pres-card__badge {
-      font-size: 0.7rem;
-      font-weight: 600;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--color-primary);
-      background: rgba(34,214,114,0.1);
-      border: 1px solid rgba(34,214,114,0.2);
-      padding: 3px 10px;
-      border-radius: 999px;
-    }
-
-    .pres-card__badge--soon {
-      color: var(--color-muted);
-      background: rgba(107,114,128,0.1);
-      border-color: rgba(107,114,128,0.2);
-    }
-
-    .pres-card__title {
-      font-family: var(--font-heading);
-      font-size: 1.2rem;
-      font-weight: 700;
-      color: var(--color-text);
-      margin-bottom: 0.25rem;
-    }
-
-    .pres-card__desc {
+      gap: 6px;
       font-size: 0.875rem;
-      color: var(--color-muted);
-      line-height: 1.6;
-    }
-
-    .pres-card__footer {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+      font-weight: 600;
+      color: #52B788;
       margin-top: auto;
-      padding-top: 1rem;
-      border-top: 1px solid var(--color-border);
     }
 
-    .pres-card__target {
-      font-size: 0.75rem;
-      color: var(--color-muted);
+    .landing-card:hover .landing-card__cta svg {
+      transform: translateX(4px);
     }
 
-    .pres-card__arrow {
-      font-size: 1.2rem;
-      color: var(--color-primary);
-      transition: transform 0.2s;
+    .landing-card__cta svg {
+      transition: transform 200ms ease;
     }
 
-    .pres-card:hover .pres-card__arrow { transform: translateX(4px); }
-
-    .pres-card--disabled {
+    .landing-card--disabled {
+      opacity: 0.55;
       pointer-events: none;
-      opacity: 0.45;
     }
 
-    .footer-note {
-      margin-top: 3rem;
-      font-size: 0.8rem;
-      color: var(--color-muted);
-    }
-
-    .footer-note a {
-      color: var(--color-primary);
-      text-decoration: none;
-    }
-
-    @media (max-width: 600px) {
-      .headline { font-size: 1.8rem; }
-      .presentations-grid { grid-template-columns: 1fr; }
+    /* Footer */
+    .landing-footer {
+      text-align: center;
+      padding: 2rem;
+      font-size: 0.75rem;
+      color: #8FA890;
+      border-top: 1px solid #C9E0CA;
     }
   </style>
 </head>
 <body>
-  <div class="page">
-    <div class="content">
 
-      <!-- Logo -->
-      <div class="logo">
-        <div class="logo__icon">🌿</div>
-        <div class="logo__text">Baum<span>system</span></div>
-      </div>
+  <!-- Minimal nav -->
+  <nav class="site-nav" id="siteNav">
+    <span class="nav-logo">Baum<span>system</span></span>
+  </nav>
 
-      <!-- Headline -->
-      <h1 class="headline">
-        Centro de<br><span>Presentaciones</span>
-      </h1>
-      <p class="subtitle">
-        Selecciona la presentación que quieres ver. Cada una está adaptada a su audiencia y personalizada por cliente.
-      </p>
-
-      <!-- Grid de presentaciones -->
-      <div class="presentations-grid">
-
-        <!-- Baumsystem (activa) -->
-        <a href="/brands/baumsystem/" class="pres-card">
-          <div class="pres-card__header">
-            <div class="pres-card__icon">💧</div>
-            <span class="pres-card__badge">Disponible</span>
-          </div>
-          <div>
-            <div class="pres-card__title">Baumsystem — Presentación Comercial</div>
-            <p class="pres-card__desc">
-              Pitch deck de ventas para clientes potenciales. Muestra qué es Baumsystem, cómo funciona, KPIs, módulos y beneficios.
-            </p>
-          </div>
-          <div class="pres-card__footer">
-            <span class="pres-card__target">👥 Para: Clientes agrícolas</span>
-            <span class="pres-card__arrow">→</span>
-          </div>
-        </a>
-
-        <!-- Placeholder: cliente personalizado -->
-        <div class="pres-card pres-card--disabled">
-          <div class="pres-card__header">
-            <div class="pres-card__icon">🏢</div>
-            <span class="pres-card__badge pres-card__badge--soon">Próximamente</span>
-          </div>
-          <div>
-            <div class="pres-card__title">Presentación Cliente A</div>
-            <p class="pres-card__desc">
-              Agrega aquí una presentación personalizada con la identidad visual del cliente. Cambia theme.css y los datos.
-            </p>
-          </div>
-          <div class="pres-card__footer">
-            <span class="pres-card__target">👥 Para: Cliente específico</span>
-            <span class="pres-card__arrow">→</span>
-          </div>
-        </div>
-
-        <!-- Placeholder: otra presentación -->
-        <div class="pres-card pres-card--disabled">
-          <div class="pres-card__header">
-            <div class="pres-card__icon">📈</div>
-            <span class="pres-card__badge pres-card__badge--soon">Próximamente</span>
-          </div>
-          <div>
-            <div class="pres-card__title">Presentación Directorio</div>
-            <p class="pres-card__desc">
-              Presentación de avances y resultados para el directorio interno. Roadmap, KPIs y plan de expansión.
-            </p>
-          </div>
-          <div class="pres-card__footer">
-            <span class="pres-card__target">👥 Para: Directorio</span>
-            <span class="pres-card__arrow">→</span>
-          </div>
-        </div>
-
-      </div>
-
-      <p class="footer-note">
-        Para agregar una nueva presentación: duplica la carpeta <code>/brands/baumsystem/</code>, renómbrala y personaliza <code>theme.css</code> con los colores del cliente. ·
-        <a href="mailto:contacto@baumsystem.com">contacto@baumsystem.com</a>
-      </p>
-
+  <!-- Hero -->
+  <section class="landing-hero">
+    <div class="landing-hero__decor" aria-hidden="true">
+      <div class="landing-hero__decor-circle landing-hero__decor-circle--1"></div>
+      <div class="landing-hero__decor-circle landing-hero__decor-circle--2"></div>
     </div>
+
+    <div class="landing-hero__content">
+      <div class="landing-hero__badge">
+        <svg width="8" height="8" viewBox="0 0 8 8" fill="currentColor"><circle cx="4" cy="4" r="4"/></svg>
+        Presentaciones Comerciales
+      </div>
+      <h1 class="landing-hero__logo">Baum<span>system</span></h1>
+      <p class="landing-hero__sub">
+        Selecciona la presentación correspondiente<br/>al cliente que deseas visitar.
+      </p>
+    </div>
+  </section>
+
+  <!-- Presentations grid -->
+  <div class="landing-grid">
+
+    <!-- Baumsystem main pitch -->
+    <a href="brands/baumsystem/" class="landing-card">
+      <div class="landing-card__badge landing-card__badge--active">
+        <svg width="8" height="8" viewBox="0 0 8 8" fill="currentColor"><circle cx="4" cy="4" r="4"/></svg>
+        Activo
+      </div>
+      <div class="landing-card__icon">
+        <svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+          <path d="M12 2a7 7 0 1 0 0 14A7 7 0 0 0 12 2z"/>
+          <path d="M16.24 7.76a6 6 0 0 1 0 8.49M7.76 16.24a6 6 0 0 1 0-8.49"/>
+          <path d="M12 8v4l3 3"/>
+        </svg>
+      </div>
+      <div class="landing-card__title">Pitch Comercial<br/>Baumsystem</div>
+      <div class="landing-card__desc">Presentación completa de la plataforma: levantamiento, mediciones, eventos, reportería y beneficios para el cliente. Adaptable a cualquier prospecto.</div>
+      <div class="landing-card__cta">
+        Ver presentación
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M3 8h10M9 4l4 4-4 4"/>
+        </svg>
+      </div>
+    </a>
+
+    <!-- Placeholder 2 -->
+    <div class="landing-card landing-card--disabled">
+      <div class="landing-card__badge landing-card__badge--coming">Próximamente</div>
+      <div class="landing-card__icon" style="background:#F3F4F6;color:#9CA3AF;">
+        <svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+          <rect x="3" y="3" width="18" height="18" rx="3"/>
+          <path d="M12 8v8M8 12h8"/>
+        </svg>
+      </div>
+      <div class="landing-card__title" style="color:#9CA3AF;">Nueva Presentación</div>
+      <div class="landing-card__desc" style="color:#9CA3AF;">Agrega aquí una nueva presentación para otro cliente o segmento. Crea la carpeta en /brands/nombre-cliente/.</div>
+      <div class="landing-card__cta" style="color:#9CA3AF;">
+        Próximamente
+      </div>
+    </div>
+
   </div>
+
+  <!-- Footer -->
+  <footer class="landing-footer">
+    © 2026 Baumsystem · Chile · México · b.sepulveda@baumsystem.com
+  </footer>
+
+  <!-- GSAP for nav scroll effect -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="shared/js/core.js"></script>
+  <script>
+    // Animate cards on load
+    if (typeof gsap !== 'undefined') {
+      gsap.from('.landing-hero__content > *', {
+        opacity: 0,
+        y: 30,
+        stagger: 0.15,
+        duration: 0.8,
+        ease: 'power2.out',
+        delay: 0.2
+      });
+
+      gsap.from('.landing-card', {
+        opacity: 0,
+        y: 40,
+        stagger: 0.15,
+        duration: 0.7,
+        ease: 'power2.out',
+        delay: 0.6
+      });
+    }
+  </script>
 </body>
 </html>
